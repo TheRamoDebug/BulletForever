@@ -44,25 +44,15 @@ public class ControladorBalas {
         }
     }
 
-    public void eliminarBala(ClaseBalas b){
+    public void drawBulletsAndCollide(SpriteBatch c, Texture bullet, ControllerEnemies controllerEnemy) {
         for (i = balasActivas.size - 1; i >= 0; i--) {
-            ClaseBalas c = balasActivas.get(i);
-            if (b == c) {
+            ClaseBalas b = balasActivas.get(i);
+
+            if (controllerEnemy.isCollidingWithEnemy(b)) {
                 balasActivas.removeIndex(i);
                 balaPool.free(b);
+                continue;
             }
-        }
-    }
-
-    public void drawBulletsAndCollide(SpriteBatch c, Texture bullet, ControllerEnemies controllerEnemy){
-        for (ClaseBalas b : balasActivas) {
-
-
-            if(controllerEnemy.isCollidingWithEnemy(b) == true){
-                eliminarBala(b);
-            }
-
-
             if (b.activa == true) {
                 if (b.radio == 1) {
                     c.draw(bullet, b.posicion.x, b.posicion.y, b.radio / 16f, b.radio / 2f);
@@ -75,11 +65,11 @@ public class ControladorBalas {
     }
 
 
+    public void drawBulletsEnemies(SpriteBatch c, Texture bullet, Rectangle collisionPlayer) {
+        for (i = balasActivas.size - 1; i >= 0; i--) {
+            ClaseBalas b = balasActivas.get(i);
 
-    public void drawBulletsEnemies(SpriteBatch c, Texture bullet, Rectangle collisionPlayer){
-        for (ClaseBalas b : balasActivas) {
-
-            if(b.collision.overlaps(collisionPlayer)){
+            if (b.collision.overlaps(collisionPlayer)) {
                 PlayerAuxiliar.setLessHealth(2);
                 b.activa = false;
             }
@@ -91,10 +81,10 @@ public class ControladorBalas {
                 if (b.radio == 12) {
                     c.draw(bullet, b.posicion.x, b.posicion.y, b.radio / 16f, b.radio / 4f);
                 }
-            }else{
-                eliminarBala(b);
+            } else {
+                balasActivas.removeIndex(i);
+                balaPool.free(b);
             }
-
         }
     }
 }
