@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -41,13 +42,9 @@ public class PantallaGameplay implements Screen {
     private ClassEnemy enemyObject;
     private int i = 0;
     private float oscilacion;
-    private float movementBackground = 0;
-    private float positionBackground1 = 0;
-    private float positionBackground2 = -9f;
+    private LevelsController controllerLevelsNew;
 
-    private boolean level1 = true;
     private float cont = 0;
-    private float enemyTotal = 25;
     private float superCont = 1;
 
     private Vector2 movementPlayer;
@@ -57,7 +54,7 @@ public class PantallaGameplay implements Screen {
     private static final float WORLD_HEIGHT = 9f;
 
 
-
+    private Sound shotPlayer;
     private Music backgroundMusic;
 
 
@@ -68,12 +65,15 @@ public class PantallaGameplay implements Screen {
 
     @Override
     public void show(){
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("musica_fondo.mp3"));
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("backMusic.mp3"));
 
         backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(0.5f);
         backgroundMusic.play();
 
+        shotPlayer = Gdx.audio.newSound(Gdx.files.internal("shotSound.mp3"));
+
+        controllerLevelsNew = new LevelsController();
 
         cameraFirst = new OrthographicCamera();
         cameraSecond = new OrthographicCamera();
@@ -105,7 +105,7 @@ public class PantallaGameplay implements Screen {
 
         shapeRenderer = new ShapeRenderer();
 
-        PlayerAuxiliar.setHealth(10);
+        PlayerAuxiliar.setHealth(1000);
     }
 
     @Override
@@ -126,48 +126,34 @@ public class PantallaGameplay implements Screen {
 
         game.batch.begin();
 
-        movementBackground += delta * 20;
-
-        game.batch.draw(fondo, 0, -movementBackground, WORLD_WIDTH, WORLD_HEIGHT);
-        game.batch.draw(fondo, 0, 9f - movementBackground, WORLD_WIDTH, WORLD_HEIGHT);
-
-        if (movementBackground >= 9f) {
-            movementBackground = 0;
-        }
 
 
-        //calculate the oscillation
-        oscilacion += delta * 0.5;
-
-        cont += delta;
-
-        if(cont > 0.5 && enemyTotal >= 0){
-            cont = 0;
-            enemyTotal -= 1;
-            enemyObject = new ClassEnemy(100, 50, 4, movementEnemys, 3f, oscilacion);
-            controllerMoreEnemys.addEnemy(enemyObject);
-        }
-
-        controllerMoreEnemys.movementEnemies(delta, oscilacion, game.batch, enemySprite, bulletsEnemy);
+        //controller for the levels and more(like draw enemys, shots, draw the background and move the enemys
+        controllerLevelsNew.level1(game.batch, controllerMoreEnemys,bulletsEnemy ,fondo, enemySprite, delta);
 
 
-
+        //functions for draw bullets and collides
         bulletsPlayer.drawBulletsAndCollide(game.batch, balaImagen, controllerMoreEnemys);
         bulletsEnemy.drawBulletsEnemies(game.batch, balaImagen, colisionPlayer);
 
 
+
+        //functions for player (need rework)
         if(PlayerAuxiliar.getHealth() >= 0) {
             //it's the player plane with his collision
             game.batch.draw(avion, movementPlayer.x, movementPlayer.y, 0.8f, 0.8f );
             colisionPlayer.set(movementPlayer.x + 0.4f - ((0.8f / 2) / 2) , movementPlayer.y, 0.8f / 2, 0.8f);
-            newControler.controlsKeysShots(bulletsPlayer, movementPlayer);
-            movementPlayer = newControler.controlsKeys(movementPlayer, delta);
         }
+        newControler.controlsKeysShots(bulletsPlayer, movementPlayer, shotPlayer);
+        movementPlayer = newControler.controlsKeys(movementPlayer, delta);
+
+
 
 
 
         bulletsEnemy.actualizarPantalla(delta, WORLD_WIDTH, WORLD_HEIGHT);
         bulletsPlayer.actualizarPantalla(delta, WORLD_WIDTH,WORLD_HEIGHT);
+
 
         game.batch.end();
 
@@ -196,6 +182,8 @@ public class PantallaGameplay implements Screen {
         }else{
             superCont = 0;
         }
+
+
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(new Color(0f, 0f, 0f, superCont));
