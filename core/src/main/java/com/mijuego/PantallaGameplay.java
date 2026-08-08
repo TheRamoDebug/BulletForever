@@ -165,6 +165,7 @@ public class PantallaGameplay implements Screen {
 
         game.batch.end();
         if (estadoActual == EstadoJuego.GAME_OVER) {
+            Gdx.input.setInputProcessor(gameOverOverlay.getStage());
             gameOverOverlay.render(delta);
 
             if (gameOverOverlay.seQuiereReintentar()) {
@@ -173,6 +174,7 @@ public class PantallaGameplay implements Screen {
                 controllerMoreEnemys = new ControllerEnemies();
                 gameOverOverlay.reset();
                 estadoActual = EstadoJuego.JUGANDO;
+                Gdx.input.setInputProcessor(null);
             }
 
             if (gameOverOverlay.seQuiereIrAlMenu()) {

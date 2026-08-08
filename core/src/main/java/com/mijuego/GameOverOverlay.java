@@ -80,6 +80,11 @@ public class GameOverOverlay {
      stage.act(delta);
      stage.draw();
     }
+
+ public Stage getStage() {
+        return stage;
+ }
+
  public boolean seQuiereReintentar() {
         return quiereReintentar;
  }
