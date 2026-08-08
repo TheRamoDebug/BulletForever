@@ -21,6 +21,8 @@ public class ControllerEnemies {
         this.enemies.add(e);
     }
 
+    public int getEnemysCount(){return enemies.size();}
+
 
     public boolean isCollidingWithEnemy(ClaseBalas bullet) {
         if (enemies.size() != 0) {
@@ -39,11 +41,13 @@ public class ControllerEnemies {
         }
         return false;
     }
-    public void  movementEnemies(float delta, float oscilation, SpriteBatch c, Sprite textureEnemy, ControladorBalas bala){
+
+
+    public void  movementEnemies(float delta, float oscilation, SpriteBatch c, Sprite textureEnemy, ControladorBalas bala, int typeOfMovement){
 
         for (int i = enemies.size() - 1; i >= 0; i--){
-            enemies.get(i).newPosition(delta, oscilation);
-            enemies.get(i).drawEnemyAndShot(c,textureEnemy,bala);
+            enemies.get(i).newPosition(delta, oscilation,c,textureEnemy, enemies.get(i).typeOfMovement);
+            enemies.get(i).drawEnemyAndShot(bala);
         }
 
     }

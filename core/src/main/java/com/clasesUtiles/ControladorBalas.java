@@ -5,13 +5,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
-import java.awt.*;
-import java.util.ArrayList;
+
 
 public class ControladorBalas {
 
-    public int i;
     public final Array<ClaseBalas> balasActivas = new Array<>();
 
 
@@ -31,7 +28,7 @@ public class ControladorBalas {
 
     public void actualizarPantalla(float delta, float anchoPantalla, float altoPantalla ){
 
-        for (i = balasActivas.size - 1; i >= 0; i--){
+        for (int i = balasActivas.size - 1; i >= 0; i--){
             ClaseBalas b = balasActivas.get(i);
             b.actualizar(delta);
 
@@ -44,29 +41,33 @@ public class ControladorBalas {
         }
     }
 
-    public void drawBulletsAndCollide(SpriteBatch c, Texture bullet, ControllerEnemies controllerEnemy) {
-        for (i = balasActivas.size - 1; i >= 0; i--) {
+
+
+    public void drawBulletsAndCollide(SpriteBatch c, Texture bullet, ControllerEnemies controllerEnemy){
+        for (int i = balasActivas.size - 1; i >= 0; i--) {
             ClaseBalas b = balasActivas.get(i);
 
-            if (controllerEnemy.isCollidingWithEnemy(b)) {
+            if(controllerEnemy.isCollidingWithEnemy(b) == true){
                 balasActivas.removeIndex(i);
                 balaPool.free(b);
-                continue;
             }
+
+
             if (b.activa == true) {
                 if (b.radio == 1) {
                     c.draw(bullet, b.posicion.x, b.posicion.y, b.radio / 16f, b.radio / 2f);
                 }
                 if (b.radio == 3) {
-                    c.draw(bullet, b.posicion.x, b.posicion.y, b.radio / 16f, b.radio / 4f);
+                    c.draw(bullet, b.posicion.x, b.posicion.y, b.radio / 16f, b.radio / 2f);
                 }
             }
         }
     }
 
 
-    public void drawBulletsEnemies(SpriteBatch c, Texture bullet, Rectangle collisionPlayer) {
-        for (i = balasActivas.size - 1; i >= 0; i--) {
+
+    public void drawBulletsEnemies(SpriteBatch c, Texture bullet, Rectangle collisionPlayer){
+        for (int i = balasActivas.size - 1; i >= 0; i--) {
             ClaseBalas b = balasActivas.get(i);
 
             if (b.collision.overlaps(collisionPlayer)) {

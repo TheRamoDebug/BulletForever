@@ -18,4 +18,12 @@ public class PlayerAuxiliar {
         return health;
     }
 
+
+    public void managerPlayer(){
+
+    }
+
+
+
+
 }
