@@ -201,20 +201,19 @@ public class PantallaGameplay implements Screen {
         shapeRenderer.setProjectionMatrix(cameraFirst.combined);
 
 
-
-        if ( superCont > 0){
+    if (estadoActual == EstadoJuego.JUGANDO) {
+        if (superCont > 0) {
             superCont -= delta * 0.2;
-        }else{
+        } else {
             superCont = 0;
         }
-
 
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(new Color(0f, 0f, 0f, superCont));
         shapeRenderer.rect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
         shapeRenderer.end();
-
+    }
 
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.K)){

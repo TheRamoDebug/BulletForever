@@ -11,6 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+
 
 public class GameOverOverlay {
     private Stage stage;
@@ -29,7 +32,7 @@ public class GameOverOverlay {
         shapeRenderer = new ShapeRenderer();
         batch = new com.badlogic.gdx.graphics.g2d.SpriteBatch();
         font = new BitmapFont();
-        font.getData().setScale(0.025f);
+        font.getData().setScale(0.06f);
         skin = new Skin();
         skin.add("default-font", font);
 
@@ -37,12 +40,24 @@ public class GameOverOverlay {
         buttonStyle.font = font;
         buttonStyle.fontColor = Color.WHITE;
         skin.add("default", buttonStyle);
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+        labelStyle.fontColor = Color.WHITE;
+        Label gameOverLabel = new Label("GAME OVER", labelStyle);
 
         retryButton = new TextButton("REINTENTAR", skin);
-        retryButton.setPosition(6.5f,4f);
         menuButton = new TextButton("MENU PRINCIPAL", skin);
-        menuButton.setPosition(6.5f, 2.5f);
 
+        gameOverLabel.pack();
+        retryButton.pack();
+        menuButton.pack();
+
+        float centerX = viewport.getWorldWidth() / 2f;
+        gameOverLabel.setPosition(centerX - gameOverLabel.getWidth() / 2f, 7f);
+        retryButton.setPosition(centerX - retryButton.getWidth() / 2f, 3f);
+        menuButton.setPosition(centerX - menuButton.getWidth() / 2f, 1.5f);
+
+        stage.addActor(gameOverLabel);
         stage.addActor(retryButton);
         stage.addActor(menuButton);
 
@@ -61,6 +76,7 @@ public class GameOverOverlay {
 
     }
     public void render(float delta) {
+
         if(fadeAlpha < 0.6f) {
             fadeAlpha += delta * 0.5f;
         }
@@ -73,10 +89,6 @@ public class GameOverOverlay {
       shapeRenderer.end();
 
 
-     batch.setProjectionMatrix(stage.getCamera().combined);
-     batch.begin();
-     font.draw(batch, "GAME OVER", 5.5f, 7f);
-     batch.end();
      stage.act(delta);
      stage.draw();
     }
