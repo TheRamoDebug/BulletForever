@@ -78,12 +78,10 @@ public class ClassEnemy {
 
 
 
-    public void drawEnemyAndShot(ControladorBalas c){
+    public void drawEnemyAndShot(ControladorBalas c, float delta){
 
-        randomNumber = MathUtils.random(1,attackProbability);
-
-        if(randomNumber == 1) {
-            c.disparar(posicionEnemy.x, posicionEnemy.y, 1, 0, -2f);
+        if(MathUtils.random() < delta * (1d / attackProbability) * 10f) {
+          c.disparar(posicionEnemy.x, posicionEnemy.y, 1, 0, -2f);
         }
 
     }

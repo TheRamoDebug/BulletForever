@@ -47,7 +47,7 @@ public class ControllerEnemies {
 
         for (int i = enemies.size() - 1; i >= 0; i--){
             enemies.get(i).newPosition(delta, oscilation,c,textureEnemy, enemies.get(i).typeOfMovement);
-            enemies.get(i).drawEnemyAndShot(bala);
+            enemies.get(i).drawEnemyAndShot(bala, delta);
         }
 
     }
