@@ -23,6 +23,11 @@ import com.clasesUtiles.*;
 
 
 public class PantallaGameplay implements Screen {
+    public enum EstadoJuego {
+        JUGANDO,
+        GAME_OVER;
+    }
+
     private final Main game;
     private OrthographicCamera cameraFirst;
     private OrthographicCamera cameraSecond;
@@ -43,6 +48,8 @@ public class PantallaGameplay implements Screen {
     private int i = 0;
     private float oscilacion;
     private LevelsController controllerLevelsNew;
+    private EstadoJuego estadoActual;
+    private GameOverOverlay gameOverOverlay;
 
     private float cont = 0;
     private float superCont = 1;
@@ -75,6 +82,8 @@ public class PantallaGameplay implements Screen {
 
         controllerLevelsNew = new LevelsController();
 
+        estadoActual = EstadoJuego.JUGANDO;
+
         cameraFirst = new OrthographicCamera();
         cameraSecond = new OrthographicCamera();
 
@@ -82,6 +91,7 @@ public class PantallaGameplay implements Screen {
         //this is the two viewports
         viewportFirst = new StretchViewport(WORLD_WIDTH , WORLD_HEIGHT, cameraFirst);
         viewportSecond = new StretchViewport(WORLD_WIDTH , WORLD_HEIGHT, cameraSecond);
+        gameOverOverlay = new GameOverOverlay(viewportFirst);
 
         movementPlayer = new Vector2(0f,0f);
         movementEnemys = new Vector2(5f,4f);
@@ -105,7 +115,7 @@ public class PantallaGameplay implements Screen {
 
         shapeRenderer = new ShapeRenderer();
 
-        PlayerAuxiliar.setHealth(1000);
+        PlayerAuxiliar.setHealth(5);
     }
 
     @Override
@@ -127,35 +137,48 @@ public class PantallaGameplay implements Screen {
         game.batch.begin();
 
 
+        float logicDelta = (estadoActual == EstadoJuego.JUGANDO) ? delta : 0f;
 
         //controller for the levels and more(like draw enemys, shots, draw the background and move the enemys
-        controllerLevelsNew.level1(game.batch, controllerMoreEnemys,bulletsEnemy ,fondo, enemySprite, delta);
-
+        controllerLevelsNew.level1(game.batch, controllerMoreEnemys,bulletsEnemy ,fondo, enemySprite, logicDelta);
 
         //functions for draw bullets and collides
         bulletsPlayer.drawBulletsAndCollide(game.batch, balaImagen, controllerMoreEnemys);
         bulletsEnemy.drawBulletsEnemies(game.batch, balaImagen, colisionPlayer);
 
-
-
         //functions for player (need rework)
-        if(PlayerAuxiliar.getHealth() >= 0) {
-            //it's the player plane with his collision
-            game.batch.draw(avion, movementPlayer.x, movementPlayer.y, 0.8f, 0.8f );
-            colisionPlayer.set(movementPlayer.x + 0.4f - ((0.8f / 2) / 2) , movementPlayer.y, 0.8f / 2, 0.8f);
+        game.batch.draw(avion, movementPlayer.x, movementPlayer.y, 0.8f, 0.8f );
+        colisionPlayer.set(movementPlayer.x + 0.4f - ((0.8f / 2) / 2) , movementPlayer.y, 0.8f / 2, 0.8f);
+
+        if (estadoActual == EstadoJuego.JUGANDO) {
+            newControler.controlsKeysShots(bulletsPlayer, movementPlayer, shotPlayer);
+            movementPlayer = newControler.controlsKeys(movementPlayer, delta);
         }
-        newControler.controlsKeysShots(bulletsPlayer, movementPlayer, shotPlayer);
-        movementPlayer = newControler.controlsKeys(movementPlayer, delta);
 
+        bulletsEnemy.actualizarPantalla(logicDelta, WORLD_WIDTH, WORLD_HEIGHT);
+        bulletsPlayer.actualizarPantalla(logicDelta, WORLD_WIDTH,WORLD_HEIGHT);
 
-
-
-
-        bulletsEnemy.actualizarPantalla(delta, WORLD_WIDTH, WORLD_HEIGHT);
-        bulletsPlayer.actualizarPantalla(delta, WORLD_WIDTH,WORLD_HEIGHT);
+        if (estadoActual == EstadoJuego.JUGANDO && PlayerAuxiliar.getHealth() <= 0) {
+            estadoActual = EstadoJuego.GAME_OVER;
+        }
 
 
         game.batch.end();
+        if (estadoActual == EstadoJuego.GAME_OVER) {
+            gameOverOverlay.render(delta);
+
+            if (gameOverOverlay.seQuiereReintentar()) {
+                PlayerAuxiliar.setHealth(5);
+                controllerLevelsNew = new LevelsController();
+                controllerMoreEnemys = new ControllerEnemies();
+                gameOverOverlay.reset();
+                estadoActual = EstadoJuego.JUGANDO;
+            }
+
+            if (gameOverOverlay.seQuiereIrAlMenu()) {
+                game.setScreen(new PantallaInicio(game));
+            }
+        }
 
 
 
