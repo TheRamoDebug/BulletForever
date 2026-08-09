@@ -12,17 +12,21 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.*;
 import io.github.com.mygdx.game.Main;
-import com.clasesUtiles.*;
+import com.utilClasses.*;
 
 
-public class PantallaGameplay implements Screen {
+public class ScreenGameplay implements Screen {
+    public enum EstadoJuego {
+        JUGANDO,
+        GAME_OVER;
+    }
+
     private final Main game;
     private OrthographicCamera cameraFirst;
     private OrthographicCamera cameraSecond;
@@ -38,11 +42,15 @@ public class PantallaGameplay implements Screen {
     private Texture backTexture;
     private controls newControler;
     private Rectangle colisionPlayer;
-    private ShapeRenderer shapeRenderer;
     private ClassEnemy enemyObject;
     private int i = 0;
     private float oscilacion;
     private LevelsController controllerLevelsNew;
+
+    private EstadoJuego estadoActual;
+    private GameOverOverlay gameOverOverlay;
+
+
 
     private float cont = 0;
     private float superCont = 1;
@@ -58,20 +66,22 @@ public class PantallaGameplay implements Screen {
     private Music backgroundMusic;
 
 
-    public PantallaGameplay(Main game){
+    public ScreenGameplay(Main game){
         this.game = game;
         Gdx.app.log("hola pantalla gameplay", "sopas");
     }
 
     @Override
     public void show(){
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("backMusic.mp3"));
+        estadoActual = EstadoJuego.JUGANDO;
 
+        shotPlayer = Gdx.audio.newSound(Gdx.files.internal("Sounds/shotSound.mp3"));
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/backMusic.mp3"));
         backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(0.5f);
         backgroundMusic.play();
 
-        shotPlayer = Gdx.audio.newSound(Gdx.files.internal("shotSound.mp3"));
+
 
         controllerLevelsNew = new LevelsController();
 
@@ -81,6 +91,7 @@ public class PantallaGameplay implements Screen {
 
         //this is the two viewports
         viewportFirst = new StretchViewport(WORLD_WIDTH , WORLD_HEIGHT, cameraFirst);
+        gameOverOverlay = new GameOverOverlay(viewportFirst);
         viewportSecond = new StretchViewport(WORLD_WIDTH , WORLD_HEIGHT, cameraSecond);
 
         movementPlayer = new Vector2(0f,0f);
@@ -88,12 +99,13 @@ public class PantallaGameplay implements Screen {
         newControler = new controls();
 
 
-        balaImagen = new Texture("disparoNew.png");
-        fondo = new Texture("backSpace.jfif");
-        backTexture = new Texture("difuminado.jpg");
-        enemySprite = new Sprite (new Texture("Enemy1.png"));
+        balaImagen = new Texture("Sprites/disparoNew.png");
+        fondo = new Texture("BackgroundsEtc/backgroundGameplay.jfif");
+        backTexture = new Texture("BackgroundsEtc/backgroundStats.jpg");
+        avion = new Sprite(new Texture("Sprites/playerPlane.png"));
+        enemySprite = new Sprite (new Texture("Sprites/Enemy1.png"));
         enemySprite.flip(false,true);
-        avion = new Sprite(new Texture("playerPlane.png"));
+
 
 
         bulletsPlayer = new ControladorBalas();
@@ -103,16 +115,15 @@ public class PantallaGameplay implements Screen {
 
         colisionPlayer = new Rectangle();
 
-        shapeRenderer = new ShapeRenderer();
-
-        PlayerAuxiliar.setHealth(1000);
+        PlayerAuxiliar.setHealth(40);
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0f, 0f, 0f, 1f);
 
-
+        float logicDelta = (estadoActual == EstadoJuego.JUGANDO) ? delta : 0f;
+        game.batch.setColor(Color.WHITE);
 
         //update the camera
         cameraFirst.update();
@@ -129,7 +140,7 @@ public class PantallaGameplay implements Screen {
 
 
         //controller for the levels and more(like draw enemys, shots, draw the background and move the enemys
-        controllerLevelsNew.level1(game.batch, controllerMoreEnemys,bulletsEnemy ,fondo, enemySprite, delta);
+        controllerLevelsNew.level1(game.batch, controllerMoreEnemys,bulletsEnemy ,fondo, enemySprite, logicDelta);
 
 
         //functions for draw bullets and collides
@@ -138,25 +149,39 @@ public class PantallaGameplay implements Screen {
 
 
 
-        //functions for player (need rework)
-        if(PlayerAuxiliar.getHealth() >= 0) {
-            //it's the player plane with his collision
-            game.batch.draw(avion, movementPlayer.x, movementPlayer.y, 0.8f, 0.8f );
-            colisionPlayer.set(movementPlayer.x + 0.4f - ((0.8f / 2) / 2) , movementPlayer.y, 0.8f / 2, 0.8f);
+        //functions for player
+        game.batch.draw(avion, movementPlayer.x, movementPlayer.y, 0.8f, 0.8f );
+        colisionPlayer.set(movementPlayer.x + 0.4f - ((0.8f / 2) / 2) , movementPlayer.y, 0.8f / 2, 0.8f);
+
+        if (estadoActual == EstadoJuego.JUGANDO) {
+            newControler.controlsKeysShots(bulletsPlayer, movementPlayer, shotPlayer);
+            movementPlayer = newControler.controlsKeys(movementPlayer, delta);
         }
-        newControler.controlsKeysShots(bulletsPlayer, movementPlayer, shotPlayer);
-        movementPlayer = newControler.controlsKeys(movementPlayer, delta);
 
+        bulletsEnemy.actualizarPantalla(logicDelta, WORLD_WIDTH, WORLD_HEIGHT);
+        bulletsPlayer.actualizarPantalla(logicDelta, WORLD_WIDTH,WORLD_HEIGHT);
 
-
-
-
-        bulletsEnemy.actualizarPantalla(delta, WORLD_WIDTH, WORLD_HEIGHT);
-        bulletsPlayer.actualizarPantalla(delta, WORLD_WIDTH,WORLD_HEIGHT);
-
+        if (estadoActual == EstadoJuego.JUGANDO && PlayerAuxiliar.getHealth() <= 0) {
+            estadoActual = EstadoJuego.GAME_OVER;
+        }
 
         game.batch.end();
 
+        if (estadoActual == EstadoJuego.GAME_OVER) {
+            gameOverOverlay.render(delta);
+
+            if (gameOverOverlay.seQuiereReintentar()) {
+                PlayerAuxiliar.setHealth(5);
+                controllerLevelsNew = new LevelsController();
+                controllerMoreEnemys = new ControllerEnemies();
+                gameOverOverlay.reset();
+                estadoActual = EstadoJuego.JUGANDO;
+            }
+
+            if (gameOverOverlay.seQuiereIrAlMenu()) {
+                game.setScreen(new ScreenMenu(game));
+            }
+        }
 
 
         viewportSecond.apply();
@@ -173,7 +198,7 @@ public class PantallaGameplay implements Screen {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         viewportFirst.apply();
-        shapeRenderer.setProjectionMatrix(cameraFirst.combined);
+        game.shapeRenderer.setProjectionMatrix(cameraFirst.combined);
 
 
 
@@ -185,10 +210,10 @@ public class PantallaGameplay implements Screen {
 
 
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(new Color(0f, 0f, 0f, superCont));
-        shapeRenderer.rect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
-        shapeRenderer.end();
+        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        game.shapeRenderer.setColor(new Color(0f, 0f, 0f, superCont));
+        game.shapeRenderer.rect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+        game.shapeRenderer.end();
 
 
 
@@ -228,7 +253,6 @@ public class PantallaGameplay implements Screen {
         if (avion != null) avion.getTexture().dispose();
         if (balaImagen != null) balaImagen.dispose();
         if (fondo != null) fondo.dispose();
-        if (shapeRenderer != null) shapeRenderer.dispose();
         if (backgroundMusic != null) backgroundMusic.dispose();
 
     }

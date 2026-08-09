@@ -1,12 +1,7 @@
-package com.clasesUtiles;
+package com.utilClasses;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
 
 import java.util.ArrayList;
 
@@ -47,7 +42,7 @@ public class ControllerEnemies {
 
         for (int i = enemies.size() - 1; i >= 0; i--){
             enemies.get(i).newPosition(delta, oscilation,c,textureEnemy, enemies.get(i).typeOfMovement);
-            enemies.get(i).drawEnemyAndShot(bala);
+            enemies.get(i).drawEnemyAndShot(bala, delta);
         }
 
     }

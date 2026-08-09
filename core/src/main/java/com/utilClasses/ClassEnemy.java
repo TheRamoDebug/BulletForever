@@ -1,4 +1,4 @@
-package com.clasesUtiles;
+package com.utilClasses;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,16 +22,14 @@ public class ClassEnemy {
     public Rectangle collisionEnemy;
 
 
-
     public ClassEnemy(float health,
                       int attackProbability,
                       float velocityEnemy, Vector2 posicionEnemy,
-                      float sizeEnemy, float oscilacionFija, int typeOfMovement)
-    {
+                      float sizeEnemy, float oscilacionFija, int typeOfMovement) {
         this.health = health;
         this.attackProbability = attackProbability;
         collisionEnemy = new Rectangle();
-        collisionEnemy.set(-100,-100,sizeEnemy / 2f, sizeEnemy / 2f);
+        collisionEnemy.set(-100, -100, sizeEnemy / 2f, sizeEnemy / 2f);
         this.velocityEnemy = velocityEnemy;
         this.posicionEnemy = posicionEnemy.cpy();
         this.posicionEnemy.x += 25f;
@@ -41,9 +39,7 @@ public class ClassEnemy {
     }
 
 
-
-
-    public void newPosition(float delta, float oscilacion, SpriteBatch batch, Sprite textureEnemy, int typeOfMovement){
+    public void newPosition(float delta, float oscilacion, SpriteBatch batch, Sprite textureEnemy, int typeOfMovement) {
 
         if (posicionEnemy.x > 14f) {
             isMovementDirection = false;
@@ -68,26 +64,17 @@ public class ClassEnemy {
         }
 
 
-
         collisionEnemy.setPosition(posicionEnemy.x, posicionEnemy.y);
-        batch.draw(textureEnemy, posicionEnemy.x, posicionEnemy.y,sizeEnemy / 2, sizeEnemy / 2);
+        batch.draw(textureEnemy, posicionEnemy.x, posicionEnemy.y, sizeEnemy / 2, sizeEnemy / 2);
     }
 
 
+    public void drawEnemyAndShot(ControladorBalas c, float delta) {
 
+        randomNumber = MathUtils.random(1, attackProbability);
 
-
-
-    public void drawEnemyAndShot(ControladorBalas c){
-
-        randomNumber = MathUtils.random(1,attackProbability);
-
-        if(randomNumber == 1) {
+        if (MathUtils.random() < delta * (1d / attackProbability) * 10f) {
             c.disparar(posicionEnemy.x, posicionEnemy.y, 1, 0, -2f);
         }
-
     }
-
-
-
 }

@@ -1,4 +1,4 @@
-package com.clasesUtiles;
+package com.utilClasses;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;

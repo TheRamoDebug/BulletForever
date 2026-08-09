@@ -1,20 +1,22 @@
 package io.github.com.mygdx.game;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.mijuego.PantallaInicio;
+import com.mijuego.ScreenGameplay;
+import com.mijuego.ScreenMenu;
 
 public class Main extends Game {
 
     public SpriteBatch batch;
+    public ShapeRenderer shapeRenderer;
 
     @Override
     public void create(){
         batch = new SpriteBatch();
-
-        this.setScreen(new PantallaInicio(this));
+        shapeRenderer = new ShapeRenderer();
+        this.setScreen(new ScreenMenu(this));
     }
 
     @Override
@@ -29,6 +31,7 @@ public class Main extends Game {
     public void dispose(){
         super.dispose();
         batch.dispose();
+        shapeRenderer.dispose();
     }
 
 }

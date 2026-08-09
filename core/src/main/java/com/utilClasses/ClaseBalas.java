@@ -1,4 +1,4 @@
-package com.clasesUtiles;
+package com.utilClasses;
 
 
 import com.badlogic.gdx.math.Rectangle;

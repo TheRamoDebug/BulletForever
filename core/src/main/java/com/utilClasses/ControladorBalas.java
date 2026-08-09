@@ -1,4 +1,4 @@
-package com.clasesUtiles;
+package com.utilClasses;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

@@ -1,4 +1,4 @@
-package com.clasesUtiles;
+package com.utilClasses;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -48,7 +48,7 @@ public class LevelsController {
             cont = 0;
 
             oscilacion += 1.5;
-            ClassEnemy auxiliarEnemy = new ClassEnemy(100, 50, 4, movementEnemy, 3, oscilacion, i + 1);
+            ClassEnemy auxiliarEnemy = new ClassEnemy(100, 5, 4, movementEnemy, 3, oscilacion, i + 1);
             ce.addEnemy(auxiliarEnemy);
 
             contEnemyLevel += 1;

@@ -1,4 +1,4 @@
-package com.clasesUtiles;
+package com.utilClasses;
 
 public class PlayerAuxiliar {
     private static float health;
