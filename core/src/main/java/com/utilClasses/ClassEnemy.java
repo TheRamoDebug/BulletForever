@@ -53,10 +53,10 @@ public class ClassEnemy {
                 posicionEnemy = MovementsEnemys.movementType1(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
             }
             case 2 -> {
-                posicionEnemy = MovementsEnemys.movementType1(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
+                posicionEnemy = MovementsEnemys.movementType2(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
             }
             case 3 -> {
-                posicionEnemy = MovementsEnemys.movementType1(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
+                posicionEnemy = MovementsEnemys.movementType3(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
             }
             default -> {
 
