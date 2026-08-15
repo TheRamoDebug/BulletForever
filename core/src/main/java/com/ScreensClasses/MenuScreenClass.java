@@ -138,9 +138,6 @@ public class MenuScreenClass {
         });
     }
 
-
-
-
     public void moveButtons(Stage stage){
 
         if (oneShot) {
@@ -269,7 +266,7 @@ public class MenuScreenClass {
                superCont += delta * 0.5f;
            } else {
                superCont = 1;
-               game.setScreen(new ScreenGameplay(game));
+               game.setScreen(new ScreenLevels(game));
            }
 
            game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

@@ -1,7 +1,13 @@
 package com.utilClasses;
 
-public class PlayerAuxiliar {
+public class Player{
     private static float health;
+    private static float damage;
+    private static int levelOfPlayer;
+    private static int numberLevel;
+
+
+
 
     public static void setLessHealth(float lessHealth) {
         health -= lessHealth;
@@ -22,8 +28,5 @@ public class PlayerAuxiliar {
     public void managerPlayer(){
 
     }
-
-
-
 
 }
