@@ -50,6 +50,7 @@ public class ScreenGameplay implements Screen {
     private EstadoJuego estadoActual;
     private GameOverOverlay gameOverOverlay;
 
+    private StatsClass statsClass;
 
 
     private float cont = 0;
@@ -92,7 +93,7 @@ public class ScreenGameplay implements Screen {
         //this is the two viewports
         viewportFirst = new StretchViewport(WORLD_WIDTH , WORLD_HEIGHT, cameraFirst);
         gameOverOverlay = new GameOverOverlay(viewportFirst);
-        viewportSecond = new StretchViewport(WORLD_WIDTH , WORLD_HEIGHT, cameraSecond);
+        viewportSecond = new StretchViewport(800,600, cameraSecond);
 
         movementPlayer = new Vector2(0f,0f);
         movementEnemys = new Vector2(5f,4f);
@@ -115,7 +116,10 @@ public class ScreenGameplay implements Screen {
 
         colisionPlayer = new Rectangle();
 
-        PlayerAuxiliar.setHealth(40);
+        Player.setHealth(40);
+
+        statsClass = new StatsClass(viewportSecond, game.batch);
+
     }
 
     @Override
@@ -161,7 +165,7 @@ public class ScreenGameplay implements Screen {
         bulletsEnemy.actualizarPantalla(logicDelta, WORLD_WIDTH, WORLD_HEIGHT);
         bulletsPlayer.actualizarPantalla(logicDelta, WORLD_WIDTH,WORLD_HEIGHT);
 
-        if (estadoActual == EstadoJuego.JUGANDO && PlayerAuxiliar.getHealth() <= 0) {
+        if (estadoActual == EstadoJuego.JUGANDO && Player.getHealth() <= 0) {
             estadoActual = EstadoJuego.GAME_OVER;
         }
 
@@ -171,7 +175,7 @@ public class ScreenGameplay implements Screen {
             gameOverOverlay.render(delta);
 
             if (gameOverOverlay.seQuiereReintentar()) {
-                PlayerAuxiliar.setHealth(5);
+                Player.setHealth(5);
                 controllerLevelsNew = new LevelsController();
                 controllerMoreEnemys = new ControllerEnemies();
                 gameOverOverlay.reset();
@@ -188,11 +192,9 @@ public class ScreenGameplay implements Screen {
         game.batch.setProjectionMatrix(cameraSecond.combined);
 
         game.batch.begin();
-
-        game.batch.draw(backTexture, 0,0, WORLD_WIDTH,WORLD_HEIGHT);
-
+        //game.batch.draw(backTexture, 0,0, WORLD_WIDTH,WORLD_HEIGHT);
         game.batch.end();
-
+        statsClass.render(delta);
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -214,7 +216,6 @@ public class ScreenGameplay implements Screen {
         game.shapeRenderer.setColor(new Color(0f, 0f, 0f, superCont));
         game.shapeRenderer.rect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
         game.shapeRenderer.end();
-
 
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.K)){

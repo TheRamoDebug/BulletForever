@@ -54,12 +54,7 @@ public class ControladorBalas {
 
 
             if (b.activa == true) {
-                if (b.radio == 1) {
-                    c.draw(bullet, b.posicion.x, b.posicion.y, b.radio / 16f, b.radio / 2f);
-                }
-                if (b.radio == 3) {
-                    c.draw(bullet, b.posicion.x, b.posicion.y, b.radio / 16f, b.radio / 2f);
-                }
+                c.draw(bullet, b.posicion.x, b.posicion.y, b.radio / 16f, b.radio / 6f);
             }
         }
     }
@@ -71,17 +66,13 @@ public class ControladorBalas {
             ClaseBalas b = balasActivas.get(i);
 
             if (b.collision.overlaps(collisionPlayer)) {
-                PlayerAuxiliar.setLessHealth(2);
+                Player.setLessHealth(2);
                 b.activa = false;
             }
 
             if (b.activa == true) {
-                if (b.radio == 1) {
-                    c.draw(bullet, b.posicion.x, b.posicion.y, b.radio / 16f, b.radio / 6f);
-                }
-                if (b.radio == 12) {
-                    c.draw(bullet, b.posicion.x, b.posicion.y, b.radio / 16f, b.radio / 4f);
-                }
+                c.draw(bullet, b.posicion.x, b.posicion.y, b.radio / 16f, b.radio / 6f);
+
             } else {
                 balasActivas.removeIndex(i);
                 balaPool.free(b);

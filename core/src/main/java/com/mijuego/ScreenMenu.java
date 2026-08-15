@@ -93,7 +93,6 @@ public class ScreenMenu implements Screen{
         buttonOptions.setTransform(true);
 
 
-
         menuClass.initializeButtons(buttonPlayLevels, buttonExit, buttonPlayInfinite, buttonOptions, table, game);
 
 

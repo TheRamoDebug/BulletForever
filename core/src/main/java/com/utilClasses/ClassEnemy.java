@@ -32,7 +32,7 @@ public class ClassEnemy {
         collisionEnemy.set(-100, -100, sizeEnemy / 2f, sizeEnemy / 2f);
         this.velocityEnemy = velocityEnemy;
         this.posicionEnemy = posicionEnemy.cpy();
-        this.posicionEnemy.x += 25f;
+        this.posicionEnemy.x += 50f;
         this.sizeEnemy = sizeEnemy;
         this.oscilacionFija = oscilacionFija;
         this.typeOfMovement = typeOfMovement;
@@ -74,7 +74,7 @@ public class ClassEnemy {
         randomNumber = MathUtils.random(1, attackProbability);
 
         if (MathUtils.random() < delta * (1d / attackProbability) * 10f) {
-            c.disparar(posicionEnemy.x, posicionEnemy.y, 1, 0, -2f);
+            c.disparar(posicionEnemy.x, posicionEnemy.y, 3, 0, -7f);
         }
     }
 }

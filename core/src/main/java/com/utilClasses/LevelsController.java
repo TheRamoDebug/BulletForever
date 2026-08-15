@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class LevelsController {
-    private int[] enemysForLevel = {4,8,12,16,20};
+    private int[] enemysForLevel = {4,8,12,16,20,24,28,32,36,40};
     private int[] contLevel = {};
     private int i = 0;
     private int contEnemyLevel = 0;
@@ -48,13 +48,13 @@ public class LevelsController {
             cont = 0;
 
             oscilacion += 1.5;
-            ClassEnemy auxiliarEnemy = new ClassEnemy(100, 5, 4, movementEnemy, 3, oscilacion, i + 1);
+            ClassEnemy auxiliarEnemy = new ClassEnemy(100, 20, 4, movementEnemy, 3, oscilacion, 1);
             ce.addEnemy(auxiliarEnemy);
 
             contEnemyLevel += 1;
         }
 
-        if(ce.getEnemysCount() == 0 && i < 4){
+        if(ce.getEnemysCount() == 0 && i < 9){
             i += 1;
             contEnemyLevel = 0;
         }

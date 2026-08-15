@@ -4,8 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.mijuego.ScreenGameplay;
-import com.mijuego.ScreenMenu;
+import com.mijuego.*;
 
 public class Main extends Game {
 
@@ -16,7 +15,7 @@ public class Main extends Game {
     public void create(){
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
-        this.setScreen(new ScreenMenu(this));
+        this.setScreen(new ScreenGameplay(this));
     }
 
     @Override
