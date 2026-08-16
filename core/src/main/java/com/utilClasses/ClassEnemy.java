@@ -15,12 +15,18 @@ public class ClassEnemy {
     public float randomNumber;
     public float oscilacionFija;
     public int typeOfMovement;
+    public EnemyState currentState = EnemyState.ENTERING;
+    public float targetHeight;
 
     public boolean isMovementDirection = false;
 
 
     public Rectangle collisionEnemy;
 
+    public enum EnemyState {
+        ENTERING,
+        IN_POSITION
+    }
 
     public ClassEnemy(float health,
                       int attackProbability,
@@ -53,10 +59,10 @@ public class ClassEnemy {
                 posicionEnemy = MovementsEnemys.movementType1(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
             }
             case 2 -> {
-                posicionEnemy = MovementsEnemys.movementType1(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
+                posicionEnemy = MovementsEnemys.movementType2(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
             }
             case 3 -> {
-                posicionEnemy = MovementsEnemys.movementType1(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
+                posicionEnemy = MovementsEnemys.movementType3(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
             }
             default -> {
 
@@ -69,12 +75,10 @@ public class ClassEnemy {
     }
 
 
-    public void drawEnemyAndShot(ControladorBalas c, float delta) {
-
-        randomNumber = MathUtils.random(1, attackProbability);
+    public void drawEnemyAndShot(ControllerBullets c, float delta) {
 
         if (MathUtils.random() < delta * (1d / attackProbability) * 10f) {
-            c.disparar(posicionEnemy.x, posicionEnemy.y, 3, 0, -7f);
+            c.shot(posicionEnemy.x, posicionEnemy.y, 3, 0, -7f);
         }
     }
 }
