@@ -10,7 +10,7 @@ public class ClassEnemy {
     public float health;
     public int attackProbability;
     public float velocityEnemy;
-    public Vector2 positionEnemy;
+    public Vector2 posicionEnemy;
     public float sizeEnemy;
     public float randomNumber;
     public float oscilacionFija;
@@ -31,8 +31,8 @@ public class ClassEnemy {
         collisionEnemy = new Rectangle();
         collisionEnemy.set(-100, -100, sizeEnemy / 2f, sizeEnemy / 2f);
         this.velocityEnemy = velocityEnemy;
-        this.positionEnemy = posicionEnemy.cpy();
-        this.positionEnemy.x += 50f;
+        this.posicionEnemy = posicionEnemy.cpy();
+        this.posicionEnemy.x += 50f;
         this.sizeEnemy = sizeEnemy;
         this.oscilacionFija = oscilacionFija;
         this.typeOfMovement = typeOfMovement;
@@ -41,22 +41,22 @@ public class ClassEnemy {
 
     public void newPosition(float delta, float oscilacion, SpriteBatch batch, Sprite textureEnemy, int typeOfMovement) {
 
-        if (positionEnemy.x > 14f) {
+        if (posicionEnemy.x > 14f) {
             isMovementDirection = false;
-        } else if (positionEnemy.x < 0f) {
+        } else if (posicionEnemy.x < 0f) {
             isMovementDirection = true;
         }
 
 
         switch (typeOfMovement) {
             case 1 -> {
-                positionEnemy = MovementsEnemys.movementType1(positionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
+                posicionEnemy = MovementsEnemys.movementType1(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
             }
             case 2 -> {
-                positionEnemy = MovementsEnemys.movementType1(positionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
+                posicionEnemy = MovementsEnemys.movementType1(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
             }
             case 3 -> {
-                positionEnemy = MovementsEnemys.movementType1(positionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
+                posicionEnemy = MovementsEnemys.movementType1(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
             }
             default -> {
 
@@ -64,17 +64,17 @@ public class ClassEnemy {
         }
 
 
-        collisionEnemy.setPosition(positionEnemy.x, positionEnemy.y);
-        batch.draw(textureEnemy, positionEnemy.x, positionEnemy.y, sizeEnemy / 2, sizeEnemy / 2);
+        collisionEnemy.setPosition(posicionEnemy.x, posicionEnemy.y);
+        batch.draw(textureEnemy, posicionEnemy.x, posicionEnemy.y, sizeEnemy / 2, sizeEnemy / 2);
     }
 
 
-    public void drawEnemyAndShot(ControllerBullets c, float delta) {
+    public void drawEnemyAndShot(ControladorBalas c, float delta) {
 
         randomNumber = MathUtils.random(1, attackProbability);
 
         if (MathUtils.random() < delta * (1d / attackProbability) * 10f) {
-            c.shot(positionEnemy.x, positionEnemy.y, 3, 0, -7f);
+            c.disparar(posicionEnemy.x, posicionEnemy.y, 3, 0, -7f);
         }
     }
 }
