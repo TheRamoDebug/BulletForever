@@ -3,8 +3,6 @@ package com.mijuego;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -53,29 +51,35 @@ public class ScreenGameplay implements Screen {
     private GameOverOverlay gameOverOverlay;
     private StatsClass statsClass;
     private Controls newController;
-    private Sound shotPlayer = Gdx.audio.newSound(Gdx.files.internal("Sounds/shotSound.mp3"));
-    private Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/backMusic.mp3"));
 
 
     private float superCont = 1;
     private float deltaFinal;
+    private int level = 0;
     private Vector2 movementPlayer;
 
 
 
     public ScreenGameplay(Main game){
         this.game = game;
+
     }
+
+    public ScreenGameplay(Main game, int level){
+        this.game = game;
+        this.level = level;
+    }
+
+
 
     @Override
     public void show(){
 
-
-        backgroundMusic.setLooping(true);
-        backgroundMusic.setVolume(0.5f);
-        backgroundMusic.play();
-
-
+        if(level == 0){
+            level = Player.getNumberLevel();
+        }
+        MasterClass.stopMusicMenu();
+        MasterClass.backgroundMusicGameplay();
 
         controllerLevelsNew = new LevelsController();
 
@@ -113,11 +117,11 @@ public class ScreenGameplay implements Screen {
         statsClass = new StatsClass(viewportSecond, game.batch);
 
         Player.setHealth(3);
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.input.setInputProcessor(null);
         ScreenUtils.clear(0f, 0f, 0f, 1f);
 
         if (Player.isAlive()){
@@ -140,7 +144,7 @@ public class ScreenGameplay implements Screen {
         statsClass.actu();
 
         //controller for the levels and more(like draw enemys, shots, draw the background and move the enemys
-        controllerLevelsNew.level1(game.batch, controllerMoreEnemys,bulletsEnemy , background, enemySprite, deltaFinal);
+        controllerLevelsNew.selectLevel(game.batch, controllerMoreEnemys,bulletsEnemy , background, enemySprite, deltaFinal, level);
 
 
         //functions for draw bullets and collides
@@ -148,13 +152,12 @@ public class ScreenGameplay implements Screen {
         bulletsEnemy.drawBulletsEnemies(game.batch, bullet, colisionPlayer);
 
 
-
         //functions for player
         game.batch.draw(plane, movementPlayer.x, movementPlayer.y, 0.8f, 0.8f );
         colisionPlayer.set(movementPlayer.x + 0.4f - ((0.8f / 2) / 2) , movementPlayer.y, 0.8f / 2, 0.8f);
 
         if (Player.isAlive()) {
-            newController.controlsKeysShots(bulletsPlayer, movementPlayer, shotPlayer);
+            newController.controlsKeysShots(bulletsPlayer, movementPlayer, MasterClass.getShotPlayer());
             movementPlayer = newController.controlsKeys(movementPlayer, deltaFinal);
         }
 
@@ -190,7 +193,7 @@ public class ScreenGameplay implements Screen {
 
 
         if ( superCont > 0){
-            superCont -= delta * 0.2;
+            superCont -= delta * 0.2f;
         }else{
             superCont = 0;
         }
@@ -241,11 +244,6 @@ public class ScreenGameplay implements Screen {
         if (background != null) background.dispose();
         if (backTexture != null) backTexture.dispose();
         if (enemyTexture != null) enemyTexture.dispose();
-        if (shotPlayer != null) shotPlayer.dispose();
-        if (backgroundMusic != null) {
-            backgroundMusic.stop();
-            backgroundMusic.dispose();
-        }
         if (gameOverOverlay != null) gameOverOverlay.dispose();
         if (statsClass != null) statsClass.dispose();
     }

@@ -1,6 +1,7 @@
 package com.ScreensClasses;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.mijuego.ScreenLevels;
+import com.mijuego.ScreenGameplay;
 import io.github.com.mygdx.game.Main;
 
 
@@ -32,6 +33,9 @@ public class LevelsScreenClass {
 
 
     private Stage stage;
+    private Screen screenSelect;
+    private Main main;
+
 
     private boolean state = true;
     private boolean oneShot = true;
@@ -86,7 +90,8 @@ public class LevelsScreenClass {
         }
     }
 
-    public void organizedImmages(Image level1, Image level2, Image level3, Image level4, Stage stage) {
+    public void organizedImages(Image level1, Image level2, Image level3, Image level4, Stage stage, Main main) {
+        this.main = main;
         this.stage = stage;
 
         this.level1 = level1;
@@ -102,10 +107,10 @@ public class LevelsScreenClass {
         addAnimmation(level4);
 
 
-        fadeOff(level1);
-        fadeOff(level2);
-        fadeOff(level3);
-        fadeOff(level4);
+        fadeIn(level1);
+        fadeIn(level2);
+        fadeIn(level3);
+        fadeIn(level4);
 
 
         level1.setPosition(260, 280);
@@ -131,6 +136,7 @@ public class LevelsScreenClass {
             public void clicked(InputEvent event, float x, float y) {
                 expandImage(level1);
                 state = false;
+                screenSelect = new ScreenGameplay(main, 1);
             }
         });
 
@@ -139,6 +145,7 @@ public class LevelsScreenClass {
             public void clicked(InputEvent event, float x, float y) {
                 expandImage(level2);
                 state = false;
+                screenSelect = new ScreenGameplay(main, 2);
             }
         });
 
@@ -147,6 +154,7 @@ public class LevelsScreenClass {
             public void clicked(InputEvent event, float x, float y) {
                 expandImage(level3);
                 state = false;
+                screenSelect = new ScreenGameplay(main, 3);
             }
         });
 
@@ -155,6 +163,7 @@ public class LevelsScreenClass {
             public void clicked(InputEvent event, float x, float y) {
                 expandImage(level4);
                 state = false;
+                screenSelect = new ScreenGameplay(main, 4);
             }
         });
 
@@ -197,10 +206,10 @@ public class LevelsScreenClass {
     public void expandImage(Image image){
         Gdx.input.setInputProcessor(null);
 
-        level1.addAction(Actions.fadeOut(2f, Interpolation.bounce));
-        level2.addAction(Actions.fadeOut(2f, Interpolation.bounce));
-        level3.addAction(Actions.fadeOut(2f, Interpolation.bounce));
-        level4.addAction(Actions.fadeOut(2f, Interpolation.bounce));
+        level1.addAction(Actions.fadeOut(1f, Interpolation.bounce));
+        level2.addAction(Actions.fadeOut(1f, Interpolation.bounce));
+        level3.addAction(Actions.fadeOut(1f, Interpolation.bounce));
+        level4.addAction(Actions.fadeOut(1f, Interpolation.bounce));
 
 
 
@@ -216,10 +225,10 @@ public class LevelsScreenClass {
 
     }
 
-    public void fadeOff(Image image){
+    public void fadeIn(Image image){
         image.getColor().a = 0f;
         image.addAction(Actions.sequence(
-            Actions.fadeIn(3.5f, Interpolation.bounce),
+            Actions.fadeIn(2.5f, Interpolation.bounce),
             Actions.run(() -> Gdx.input.setInputProcessor(stage))
         ));
 
@@ -247,7 +256,9 @@ public class LevelsScreenClass {
                 superCont += delta * 0.5f;
             } else {
                 superCont = 1;
-                game.setScreen(new ScreenLevels(game));
+                Screen screen = game.getScreen();
+                game.setScreen(screenSelect);
+                screen.dispose();
             }
 
             game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

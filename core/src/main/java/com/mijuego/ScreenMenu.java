@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.utilClasses.MasterClass;
 import io.github.com.mygdx.game.Main;
 
 public class ScreenMenu implements Screen{
@@ -23,6 +24,7 @@ public class ScreenMenu implements Screen{
     private Texture backSpace;
     private Camera camera;
     private MenuScreenClass menuClass;
+
 
     private static final float WORLD_WIDTH = 16f;
     private static final float WORLD_HEIGHT = 9f;
@@ -48,6 +50,7 @@ public class ScreenMenu implements Screen{
 
     @Override
     public void show() {
+        MasterClass.backgroundMusicMenu();
         menuClass = new MenuScreenClass();
         camera = new OrthographicCamera();
         viewportTitle = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
@@ -71,33 +74,31 @@ public class ScreenMenu implements Screen{
         skin = new Skin(Gdx.files.internal("ui/star-soldier-ui.json"));
 
         Table table = new Table();
-        table.setFillParent(true);
-        table.bottom().padBottom(0);
+        table.bottom().padLeft(457);
 
         font = skin.getFont("title");
         font.getData().setScale(0.35f, 0.3f);
         font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
 
-        TextButton buttonPlayLevels = new TextButton("NIVELES", skin);
-        TextButton buttonPlayInfinite = new TextButton("MODO INFINITO", skin);
+        TextButton buttonPlay = new TextButton("JUGAR", skin);
+        TextButton buttonLevels = new TextButton("NIVELES", skin);
         TextButton buttonExit = new TextButton("SALIR", skin);
         TextButton buttonOptions = new TextButton("OPCIONES", skin);
 
 
-        buttonPlayLevels.setTransform(true);
-        buttonPlayInfinite.setTransform(true);
+        buttonPlay.setTransform(true);
+        buttonLevels.setTransform(true);
         buttonExit.setTransform(true);
         buttonOptions.setTransform(true);
 
 
-        menuClass.initializeButtons(buttonPlayLevels, buttonExit, buttonPlayInfinite, buttonOptions, table);
+        menuClass.initializeButtons(buttonPlay, buttonExit, buttonLevels, buttonOptions, table, game);
 
 
 
 
         stage.addActor(table);
-        //table.setDebug(true);
     }
 
     @Override
@@ -133,8 +134,8 @@ public class ScreenMenu implements Screen{
     }
 
     @Override public void resize(int width, int height){
-        stage.getViewport().update(width, height, true);
         viewportTitle.update(width,height, true);
+        stage.getViewport().update(width, height,true);
     }
 
 

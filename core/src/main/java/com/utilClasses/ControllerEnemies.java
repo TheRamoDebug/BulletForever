@@ -6,8 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import java.util.ArrayList;
 
 public class ControllerEnemies {
-    private ArrayList<ClassEnemy> enemies = new ArrayList<>();
-    private ClassEnemy enemyAuxiliar;
+    private final ArrayList<ClassEnemy> enemies = new ArrayList<>();
 
 
     public ControllerEnemies() {}
@@ -36,10 +35,10 @@ public class ControllerEnemies {
     }
 
 
-    public void  movementEnemies(float delta, float oscilation, SpriteBatch c, Sprite textureEnemy, ControllerBullets bala, int typeOfMovement){
+    public void  movementEnemies(float delta, float oscillation, SpriteBatch c, Sprite textureEnemy, ControllerBullets bala){
 
         for (int i = enemies.size() - 1; i >= 0; i--){
-            enemies.get(i).newPosition(delta, oscilation,c,textureEnemy, enemies.get(i).typeOfMovement);
+            enemies.get(i).newPosition(delta, oscillation,c,textureEnemy, enemies.get(i).typeOfMovement);
             enemies.get(i).drawEnemyAndShot(bala, delta);
         }
 
