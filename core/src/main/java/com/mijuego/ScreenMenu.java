@@ -65,8 +65,6 @@ public class ScreenMenu implements Screen{
         //method for c buttons
         menuClass.MenuEtc(gear, gear2);
 
-
-
         Viewport uiViewport = new FitViewport(1280, 720);
         stage = new Stage(uiViewport, game.batch);
 
@@ -93,7 +91,7 @@ public class ScreenMenu implements Screen{
         buttonOptions.setTransform(true);
 
 
-        menuClass.initializeButtons(buttonPlayLevels, buttonExit, buttonPlayInfinite, buttonOptions, table, game);
+        menuClass.initializeButtons(buttonPlayLevels, buttonExit, buttonPlayInfinite, buttonOptions, table);
 
 
 

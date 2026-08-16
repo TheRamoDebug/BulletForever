@@ -6,8 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 public class MovementsEnemys {
 
 
-
-
     public static Vector2 movementType1(Vector2 posicionEnemy, float delta, float oscilacion, float velocityEnemy, float oscilacionFija, boolean isMovementDirection){
 
         if (posicionEnemy.x > 14f) {
@@ -16,16 +14,14 @@ public class MovementsEnemys {
             isMovementDirection = true;
         }
 
-        if (isMovementDirection == true) {
+        if (isMovementDirection) {
             posicionEnemy.x += velocityEnemy * delta;
         }
 
-        if (isMovementDirection == false) {
+        if (!isMovementDirection) {
             posicionEnemy.x -= velocityEnemy * delta;
         }
         posicionEnemy.y = (MathUtils.sin(oscilacionFija + oscilacion * velocityEnemy) * 1.5f) + 5f;
-
-        System.out.println(oscilacion);
 
         return posicionEnemy;
     }
@@ -33,11 +29,11 @@ public class MovementsEnemys {
     public static Vector2 movementType2(Vector2 posicionEnemy, float delta, float oscilacion, float velocityEnemy, float oscilacionFija, boolean isMovementDirection){
 
 
-        if (isMovementDirection == true) {
+        if (isMovementDirection) {
             posicionEnemy.x += velocityEnemy * delta;
         }
 
-        if (isMovementDirection == false) {
+        if (!isMovementDirection) {
             posicionEnemy.x -= velocityEnemy * delta;
         }
 
@@ -49,11 +45,11 @@ public class MovementsEnemys {
     public static Vector2 movementType3(Vector2 posicionEnemy, float delta, float oscilacion, float velocityEnemy, float oscilacionFija, boolean isMovementDirection){
 
 
-        if (isMovementDirection == true) {
+        if (isMovementDirection ) {
             posicionEnemy.x += velocityEnemy * delta;
         }
 
-        if (isMovementDirection == false) {
+        if (!isMovementDirection) {
             posicionEnemy.x -= velocityEnemy * delta;
         }
 
@@ -74,14 +70,14 @@ public class MovementsEnemys {
     }
 
 
-    public static Vector2 movementType4(Vector2 posicionEnemy, float delta, float oscilacion, float velocityEnemy, float oscilacionFija, boolean isMovementDirection){
+    public static Vector2 movementType4(Vector2 posicionEnemy, float delta, float oscillation, float velocityEnemy, float oscillationFinal, boolean isMovementDirection){
 
 
-        if (isMovementDirection == true) {
+        if (isMovementDirection) {
             posicionEnemy.x += velocityEnemy * delta;
         }
 
-        if (isMovementDirection == false) {
+        if (!isMovementDirection) {
             posicionEnemy.x -= velocityEnemy * delta;
         }
         posicionEnemy.y = 7f;

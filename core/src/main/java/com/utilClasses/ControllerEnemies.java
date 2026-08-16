@@ -16,29 +16,27 @@ public class ControllerEnemies {
         this.enemies.add(e);
     }
 
-    public int getEnemysCount(){return enemies.size();}
+    public int getEnemiesCount(){return enemies.size();}
 
 
-    public boolean isCollidingWithEnemy(ClaseBalas bullet) {
-        if (enemies.size() != 0) {
-            for (int i = 0; i < enemies.size(); i++) {
+    public boolean isCollidingWithEnemy(ClassBullets bullet, StatsClass statsClass) {
+        for (int i = enemies.size() - 1; i >= 0; i--) {
 
-                if (bullet.collision.overlaps(enemies.get(i).collisionEnemy)) {
-                    enemies.get(i).health -= 10;
-                    if (enemies.get(i).health <= 0) {
-                        enemies.remove(i);
-
-                        System.out.println("ENEMIGOS VIVOS: " + enemies.size());
-                    }
-                    return true;
+            if (bullet.collision.overlaps(enemies.get(i).collisionEnemy)) {
+                enemies.get(i).health -= 10;
+                if (enemies.get(i).health <= 0) {
+                    statsClass.addI();
+                    enemies.remove(i);
                 }
+                return true;
             }
         }
+
         return false;
     }
 
 
-    public void  movementEnemies(float delta, float oscilation, SpriteBatch c, Sprite textureEnemy, ControladorBalas bala, int typeOfMovement){
+    public void  movementEnemies(float delta, float oscilation, SpriteBatch c, Sprite textureEnemy, ControllerBullets bala, int typeOfMovement){
 
         for (int i = enemies.size() - 1; i >= 0; i--){
             enemies.get(i).newPosition(delta, oscilation,c,textureEnemy, enemies.get(i).typeOfMovement);

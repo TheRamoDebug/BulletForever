@@ -5,24 +5,24 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 
-public class controls {
+public class Controls {
 
     private float velocity = 10f;
 
-    public void controlsKeysShots(ControladorBalas bulletsPlayer, Vector2 movementPlayer, Sound shotSound){
+    public void controlsKeysShots(ControllerBullets bulletsPlayer, Vector2 movementPlayer, Sound shotSound){
         //controls to shot oh hell na
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)){
-            bulletsPlayer.disparar(movementPlayer.x + 0.2f, movementPlayer.y, 1f,0f,12f);
+            bulletsPlayer.shot(movementPlayer.x + 0.2f, movementPlayer.y, 1f,0f,12f);
             shotSound.play(0.2f);
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.N)){
-            bulletsPlayer.disparar(movementPlayer.x  + 0.6f, movementPlayer.y, 1f,0f,12f);
+            bulletsPlayer.shot(movementPlayer.x  + 0.6f, movementPlayer.y, 1f,0f,12f);
             shotSound.play(0.2f);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.B)){
-            bulletsPlayer.disparar(movementPlayer.x + 0.4f, movementPlayer.y, 1f,0f,16f);
+            bulletsPlayer.shot(movementPlayer.x + 0.4f, movementPlayer.y, 1f,0f,16f);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.K)){

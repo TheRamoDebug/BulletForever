@@ -1,79 +1,125 @@
 package com.mijuego;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import io.github.com.mygdx.game.Main;
 
-public class GameOverOverlay {
+public class GameOverOverlay implements Disposable {
     private Stage stage;
-    private ShapeRenderer shapeRenderer;
-    private float fadeAlpha = 0f;
     private Skin skin;
-    private BitmapFont font;
     private TextButton retryButton;
     private TextButton menuButton;
-    private boolean quiereReintentar = false;
-    private boolean quiereMenu = false;
-    private com.badlogic.gdx.graphics.g2d.SpriteBatch batch;
 
-    public GameOverOverlay(Viewport viewport) {
+    private Main game;
+
+    private float fadeAlpha = 0;
+
+    public GameOverOverlay(Viewport viewport, Main game) {
+        this.game = game;
         stage = new Stage(viewport);
-        shapeRenderer = new ShapeRenderer();
-        batch = new com.badlogic.gdx.graphics.g2d.SpriteBatch();
-        font = new BitmapFont();
-        font.getData().setScale(0.06f);
-        skin = new Skin();
-        skin.add("default-font", font);
+        skin = new Skin(Gdx.files.internal("ui/star-soldier-ui.json"));
 
-        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = font;
-        buttonStyle.fontColor = Color.WHITE;
-        skin.add("default", buttonStyle);
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = font;
-        labelStyle.fontColor = Color.WHITE;
-        Label gameOverLabel = new Label("GAME OVER", labelStyle);
+        Table table = new Table();
+        table.setFillParent(true);
+        table.bottom().padBottom(150);
+
+        BitmapFont titleFont = skin.getFont("title");
+        titleFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
+
 
         retryButton = new TextButton("REINTENTAR", skin);
         menuButton = new TextButton("MENU PRINCIPAL", skin);
 
-        gameOverLabel.pack();
-        retryButton.pack();
-        menuButton.pack();
 
-        float centerX = viewport.getWorldWidth() / 2f;
-        gameOverLabel.setPosition(centerX - gameOverLabel.getWidth() / 2f, 7f);
-        retryButton.setPosition(centerX - retryButton.getWidth() / 2f, 3f);
-        menuButton.setPosition(centerX - menuButton.getWidth() / 2f, 1.5f);
+        table.add(retryButton).padBottom(200).row();
+        table.add(menuButton).row();
 
-        stage.addActor(gameOverLabel);
-        stage.addActor(retryButton);
-        stage.addActor(menuButton);
+
+        menuButton.setTransform(true);
+        retryButton.setTransform(true);
+
+        menuButton.setOrigin(menuButton.getWidth() / 2f, menuButton.getHeight() / 2f);
+        retryButton.setOrigin(retryButton.getWidth() / 2f, retryButton.getHeight() / 2f);
+
+
+        addAnimmation(menuButton);
+        addAnimmation(retryButton);
 
         retryButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y){
-                quiereReintentar = true;
+                Screen vieja = game.getScreen();
+                game.setScreen(new ScreenGameplay(game));
+
+                if (vieja != null) {
+                    vieja.dispose();
+                }
             }});
 
         menuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y){
-                quiereMenu = true;
+                Screen vieja = game.getScreen();
+                game.setScreen(new ScreenMenu(game));
+
+                if (vieja != null) {
+                    vieja.dispose();
+                }
             }
         });
 
+        stage.addActor(table);
     }
-    public void render(float delta) {
 
+
+    public void render(float delta) {
+        stage.act(delta);
+        stage.draw();
+    }
+
+
+    public Stage getStage() {
+        return stage;
+    }
+
+
+    public void addAnimmation(Button button){
+        button.addListener(new ClickListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                if (pointer == -1) {
+                    button.clearActions();
+                    button.addAction(
+                        Actions.scaleTo(1.2f, 1.2f, 0.1f, Interpolation.smooth));
+                }
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                if (pointer == -1) {
+                    button.clearActions();
+                    button.addAction(Actions.scaleTo(1.0f, 1.0f, 0.1f, Interpolation.smooth));
+                }
+            }
+        });
+    }
+
+
+    public void shapeRenderer(ShapeRenderer shapeRenderer, float delta){
         if(fadeAlpha < 0.6f) {
             fadeAlpha += delta * 0.5f;
         }
@@ -84,29 +130,9 @@ public class GameOverOverlay {
         shapeRenderer.setColor(new Color(0f, 0f, 0f, fadeAlpha));
         shapeRenderer.rect(0, 0, stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
         shapeRenderer.end();
-
-
-        stage.act(delta);
-        stage.draw();
     }
 
-    public Stage getStage() {
-        return stage;
-    }
 
-    public boolean seQuiereReintentar() {
-        return quiereReintentar;
-    }
-
-    public boolean seQuiereIrAlMenu(){
-        return quiereMenu;
-    }
-
-    public void reset() {
-        fadeAlpha = 0f;
-        quiereMenu = false;
-        quiereReintentar = false;
-    }
 
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
@@ -115,9 +141,6 @@ public class GameOverOverlay {
     public void dispose() {
         stage.dispose();
         skin.dispose();
-        font.dispose();
-        batch.dispose();
-        shapeRenderer.dispose();
     }
 
 }

@@ -11,27 +11,48 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+
 public class StatsClass implements Disposable {
     private Stage stage;
     private Skin skin;
     private Table table;
     private BitmapFont bitmapFont;
+    private Label text;
+    private Label text2;
+    private int i = Player.getCoins();
 
     public StatsClass(Viewport viewport, SpriteBatch batch) {
         stage = new Stage(viewport, batch);
         skin = new Skin(Gdx.files.internal("ui/star-soldier-ui.json"));
         table = new Table();
         table.setFillParent(true);
-        table.bottom().padBottom(0);
+        table.top();
 
         bitmapFont = skin.getFont("title");
-        bitmapFont.getData().setScale(0.35f, 0.3f);
+        bitmapFont.getData().setScale(150f, 50f);
         bitmapFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-        Label text = new Label("HELLO WORLD", skin);
-        table.add(text);
+        text = new Label("HELLO WORLD", skin);
+        text.setFontScale(3);
+        text.setText("HELLO WORLD" + i);
+        table.add(text).row();
 
+        text2 = new Label("WORLD HELLO: ", skin);
+        text2.setFontScale(3);
+        table.add(text2).row();
         stage.addActor(table);
+    }
+
+
+    public void actu(){
+        text.setText("HELLO WORLD: " + i);
+        text2.setText("COINS: " + i * 4);
+    }
+
+
+    public void addI(){
+        i += 1;
+        Player.score();
     }
 
 

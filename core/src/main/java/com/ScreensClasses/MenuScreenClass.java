@@ -24,8 +24,6 @@ public class MenuScreenClass {
     private static final float WORLD_WIDTH = 16f;
     private static final float WORLD_HEIGHT = 9f;
     private float movementBackground = 0;
-    private float contAuxiliar = 0;
-
     private float posY;
 
     private float contState = 0;
@@ -58,7 +56,7 @@ public class MenuScreenClass {
 
 
 
-    public void initializeButtons(TextButton buttonPlayLevels, TextButton buttonExit, TextButton buttonInfinite, TextButton buttonOptions , Table table, Main game){
+    public void initializeButtons(TextButton buttonPlayLevels, TextButton buttonExit, TextButton buttonInfinite, TextButton buttonOptions , Table table){
         this.buttonPlayLevels = buttonPlayLevels;
         this.buttonExit = buttonExit;
         this.buttonInfinite = buttonInfinite;
@@ -195,8 +193,6 @@ public class MenuScreenClass {
 
     public void Background(SpriteBatch c, Texture thunder, Texture backSpace, float delta){
         movementBackground += delta * 60;
-
-        contAuxiliar += delta;
 
         c.setColor(Color.WHITE);
 

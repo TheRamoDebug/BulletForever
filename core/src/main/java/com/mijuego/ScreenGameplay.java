@@ -2,7 +2,6 @@ package com.mijuego;
 
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -21,63 +19,58 @@ import io.github.com.mygdx.game.Main;
 import com.utilClasses.*;
 
 
+
 public class ScreenGameplay implements Screen {
-    public enum EstadoJuego {
-        JUGANDO,
-        GAME_OVER;
-    }
-
     private final Main game;
-    private OrthographicCamera cameraFirst;
-    private OrthographicCamera cameraSecond;
-    private Viewport viewportFirst;
-    private Viewport viewportSecond;
-    private Sprite avion;
-    private Sprite enemySprite;
-    private ControladorBalas bulletsPlayer;
-    private ControladorBalas bulletsEnemy;
-    private ControllerEnemies controllerMoreEnemys;
-    private Texture balaImagen;
-    private Texture fondo;
-    private Texture backTexture;
-    private controls newControler;
-    private Rectangle colisionPlayer;
-    private ClassEnemy enemyObject;
-    private int i = 0;
-    private float oscilacion;
-    private LevelsController controllerLevelsNew;
-
-    private EstadoJuego estadoActual;
-    private GameOverOverlay gameOverOverlay;
-
-    private StatsClass statsClass;
-
-
-    private float cont = 0;
-    private float superCont = 1;
-
-    private Vector2 movementPlayer;
-    private Vector2 movementEnemys;
-
     private static final float WORLD_WIDTH = 16f;
     private static final float WORLD_HEIGHT = 9f;
 
 
-    private Sound shotPlayer;
-    private Music backgroundMusic;
+    private OrthographicCamera cameraFirst;
+    private OrthographicCamera cameraSecond;
+    private OrthographicCamera cameraThird;
+    private Viewport viewportFirst;
+    private Viewport viewportSecond;
+    private Viewport viewportThird;
+
+
+    private Sprite plane;
+    private Sprite enemySprite;
+    private Texture bullet;
+    private Texture background;
+    private Texture backTexture;
+    private Texture enemyTexture;
+
+    private ControllerBullets bulletsPlayer;
+    private ControllerBullets bulletsEnemy;
+    private ControllerEnemies controllerMoreEnemys;
+
+
+    private Rectangle colisionPlayer;
+
+
+    private LevelsController controllerLevelsNew;
+    private GameOverOverlay gameOverOverlay;
+    private StatsClass statsClass;
+    private Controls newController;
+    private Sound shotPlayer = Gdx.audio.newSound(Gdx.files.internal("Sounds/shotSound.mp3"));
+    private Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/backMusic.mp3"));
+
+
+    private float superCont = 1;
+    private float deltaFinal;
+    private Vector2 movementPlayer;
+
 
 
     public ScreenGameplay(Main game){
         this.game = game;
-        Gdx.app.log("hola pantalla gameplay", "sopas");
     }
 
     @Override
     public void show(){
-        estadoActual = EstadoJuego.JUGANDO;
 
-        shotPlayer = Gdx.audio.newSound(Gdx.files.internal("Sounds/shotSound.mp3"));
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/backMusic.mp3"));
+
         backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(0.5f);
         backgroundMusic.play();
@@ -88,50 +81,53 @@ public class ScreenGameplay implements Screen {
 
         cameraFirst = new OrthographicCamera();
         cameraSecond = new OrthographicCamera();
+        cameraThird = new OrthographicCamera();
 
 
         //this is the two viewports
         viewportFirst = new StretchViewport(WORLD_WIDTH , WORLD_HEIGHT, cameraFirst);
-        gameOverOverlay = new GameOverOverlay(viewportFirst);
         viewportSecond = new StretchViewport(800,600, cameraSecond);
+        viewportThird = new StretchViewport(1280, 720, cameraThird);
+        gameOverOverlay = new GameOverOverlay(viewportThird, game);
 
         movementPlayer = new Vector2(0f,0f);
-        movementEnemys = new Vector2(5f,4f);
-        newControler = new controls();
+        newController = new Controls();
 
-
-        balaImagen = new Texture("Sprites/disparoNew.png");
-        fondo = new Texture("BackgroundsEtc/backgroundGameplay.jfif");
+        enemyTexture = new Texture("Sprites/Enemy1.png");
+        bullet = new Texture("Sprites/disparoNew.png");
+        background = new Texture("BackgroundsEtc/backgroundGameplay.jfif");
         backTexture = new Texture("BackgroundsEtc/backgroundStats.jpg");
-        avion = new Sprite(new Texture("Sprites/playerPlane.png"));
-        enemySprite = new Sprite (new Texture("Sprites/Enemy1.png"));
+        plane = new Sprite(new Texture("Sprites/playerPlane.png"));
+        enemySprite = new Sprite (enemyTexture);
         enemySprite.flip(false,true);
 
 
 
-        bulletsPlayer = new ControladorBalas();
-        bulletsEnemy = new ControladorBalas();
+        bulletsPlayer = new ControllerBullets();
+        bulletsEnemy = new ControllerBullets();
 
         controllerMoreEnemys = new ControllerEnemies();
 
         colisionPlayer = new Rectangle();
 
-        Player.setHealth(40);
-
         statsClass = new StatsClass(viewportSecond, game.batch);
 
+        Player.setHealth(3);
     }
 
     @Override
     public void render(float delta) {
+        Gdx.input.setInputProcessor(null);
         ScreenUtils.clear(0f, 0f, 0f, 1f);
 
-        float logicDelta = (estadoActual == EstadoJuego.JUGANDO) ? delta : 0f;
+        if (Player.isAlive()){
+            deltaFinal = delta;
+        }else{
+            deltaFinal = 0;
+        }
+
         game.batch.setColor(Color.WHITE);
 
-        //update the camera
-        cameraFirst.update();
-        cameraSecond.update();
 
         //put the viewport, configure the matrix, and another thing xd
         viewportFirst.apply();
@@ -141,50 +137,38 @@ public class ScreenGameplay implements Screen {
 
         game.batch.begin();
 
-
+        statsClass.actu();
 
         //controller for the levels and more(like draw enemys, shots, draw the background and move the enemys
-        controllerLevelsNew.level1(game.batch, controllerMoreEnemys,bulletsEnemy ,fondo, enemySprite, logicDelta);
+        controllerLevelsNew.level1(game.batch, controllerMoreEnemys,bulletsEnemy , background, enemySprite, deltaFinal);
 
 
         //functions for draw bullets and collides
-        bulletsPlayer.drawBulletsAndCollide(game.batch, balaImagen, controllerMoreEnemys);
-        bulletsEnemy.drawBulletsEnemies(game.batch, balaImagen, colisionPlayer);
+        bulletsPlayer.drawBulletsAndCollide(game.batch, bullet, controllerMoreEnemys, statsClass);
+        bulletsEnemy.drawBulletsEnemies(game.batch, bullet, colisionPlayer);
 
 
 
         //functions for player
-        game.batch.draw(avion, movementPlayer.x, movementPlayer.y, 0.8f, 0.8f );
+        game.batch.draw(plane, movementPlayer.x, movementPlayer.y, 0.8f, 0.8f );
         colisionPlayer.set(movementPlayer.x + 0.4f - ((0.8f / 2) / 2) , movementPlayer.y, 0.8f / 2, 0.8f);
 
-        if (estadoActual == EstadoJuego.JUGANDO) {
-            newControler.controlsKeysShots(bulletsPlayer, movementPlayer, shotPlayer);
-            movementPlayer = newControler.controlsKeys(movementPlayer, delta);
+        if (Player.isAlive()) {
+            newController.controlsKeysShots(bulletsPlayer, movementPlayer, shotPlayer);
+            movementPlayer = newController.controlsKeys(movementPlayer, deltaFinal);
         }
 
-        bulletsEnemy.actualizarPantalla(logicDelta, WORLD_WIDTH, WORLD_HEIGHT);
-        bulletsPlayer.actualizarPantalla(logicDelta, WORLD_WIDTH,WORLD_HEIGHT);
+        bulletsEnemy.updateScreen(deltaFinal, WORLD_WIDTH, WORLD_HEIGHT);
+        bulletsPlayer.updateScreen(deltaFinal, WORLD_WIDTH,WORLD_HEIGHT);
 
-        if (estadoActual == EstadoJuego.JUGANDO && Player.getHealth() <= 0) {
-            estadoActual = EstadoJuego.GAME_OVER;
-        }
 
         game.batch.end();
 
-        if (estadoActual == EstadoJuego.GAME_OVER) {
+
+        if (!Player.isAlive()) {
+            Gdx.input.setInputProcessor(gameOverOverlay.getStage());
             gameOverOverlay.render(delta);
-
-            if (gameOverOverlay.seQuiereReintentar()) {
-                Player.setHealth(5);
-                controllerLevelsNew = new LevelsController();
-                controllerMoreEnemys = new ControllerEnemies();
-                gameOverOverlay.reset();
-                estadoActual = EstadoJuego.JUGANDO;
-            }
-
-            if (gameOverOverlay.seQuiereIrAlMenu()) {
-                game.setScreen(new ScreenMenu(game));
-            }
+            gameOverOverlay.shapeRenderer(game.shapeRenderer, delta);
         }
 
 
@@ -192,8 +176,9 @@ public class ScreenGameplay implements Screen {
         game.batch.setProjectionMatrix(cameraSecond.combined);
 
         game.batch.begin();
-        //game.batch.draw(backTexture, 0,0, WORLD_WIDTH,WORLD_HEIGHT);
+        game.batch.draw(backTexture, 0,0, viewportSecond.getWorldWidth(),viewportSecond.getWorldHeight());
         game.batch.end();
+
         statsClass.render(delta);
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -214,14 +199,9 @@ public class ScreenGameplay implements Screen {
 
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         game.shapeRenderer.setColor(new Color(0f, 0f, 0f, superCont));
-        game.shapeRenderer.rect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+        game.shapeRenderer.rect(0, 0, 1280,720);
         game.shapeRenderer.end();
 
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.K)){
-            System.out.println(movementPlayer.x + "   " + movementPlayer.y);
-            System.out.println(MathUtils.sin(oscilacion));
-        }
     }
 
 
@@ -230,13 +210,18 @@ public class ScreenGameplay implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        int halfWidth = width / 2;
 
-        viewportFirst.update(halfWidth + halfWidth / 2, height, true);
-        viewportFirst.setScreenBounds(0, 0, halfWidth + halfWidth / 2, height);
+        int widthFirst = (int) (width * 0.75f);
+        int widthSecond = width - widthFirst;
 
-        viewportSecond.update(halfWidth, height, true);
-        viewportSecond.setScreenBounds(halfWidth + halfWidth / 2, 0, halfWidth / 2, height);
+        viewportFirst.update(widthFirst, height, true);
+        viewportFirst.setScreenBounds(0, 0, widthFirst, height);
+
+        viewportSecond.update(widthSecond, height, true);
+        viewportSecond.setScreenBounds(widthFirst, 0, widthSecond, height);
+
+        viewportThird.update(widthFirst, height, true);
+        viewportThird.setScreenBounds(0, 0,widthFirst, height);
     }
 
 
@@ -251,11 +236,18 @@ public class ScreenGameplay implements Screen {
 
     @Override
     public void dispose() {
-        if (avion != null) avion.getTexture().dispose();
-        if (balaImagen != null) balaImagen.dispose();
-        if (fondo != null) fondo.dispose();
-        if (backgroundMusic != null) backgroundMusic.dispose();
-
+        if (plane != null && plane.getTexture() != null) plane.getTexture().dispose();
+        if (bullet != null) bullet.dispose();
+        if (background != null) background.dispose();
+        if (backTexture != null) backTexture.dispose();
+        if (enemyTexture != null) enemyTexture.dispose();
+        if (shotPlayer != null) shotPlayer.dispose();
+        if (backgroundMusic != null) {
+            backgroundMusic.stop();
+            backgroundMusic.dispose();
+        }
+        if (gameOverOverlay != null) gameOverOverlay.dispose();
+        if (statsClass != null) statsClass.dispose();
     }
 
 

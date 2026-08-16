@@ -2,7 +2,6 @@ package com.ScreensClasses;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.mijuego.ScreenGameplay;
 import com.mijuego.ScreenLevels;
 import io.github.com.mygdx.game.Main;
 
@@ -29,7 +27,6 @@ public class LevelsScreenClass {
 
 
     private float movementBackground = 0;
-    private float contAuxiliar = 0;
     private float acum = 0;
     private float delta;
 
@@ -52,12 +49,8 @@ public class LevelsScreenClass {
 
         movementBackground += delta * 60f;
 
-        contAuxiliar += delta;
-
         c.setColor(Color.WHITE);
 
-        //c.draw(background, -movementBackground,0, WORLD_WIDTH, WORLD_HEIGHT * 1.2f);
-        //c.draw(background, 16f - movementBackground,0, WORLD_WIDTH, WORLD_HEIGHT * 1.2f);
 
         c.draw(background, 0, -movementBackground / 2, WORLD_WIDTH, WORLD_HEIGHT * 1.2f);
         c.draw(background, 0, 9f - movementBackground / 2, WORLD_WIDTH, WORLD_HEIGHT * 1.2f);
@@ -75,7 +68,7 @@ public class LevelsScreenClass {
     }
 
 
-    public void menuTitle(SpriteBatch c, Sprite title,float cont, float delta){
+    public void menuTitle(SpriteBatch c, Sprite title,float cont){
         float alpha = MathUtils.clamp(cont / 4f, 0f, 1f);
         posY = Interpolation.elastic.apply(20, destinyY, alpha);
 
@@ -227,9 +220,7 @@ public class LevelsScreenClass {
         image.getColor().a = 0f;
         image.addAction(Actions.sequence(
             Actions.fadeIn(3.5f, Interpolation.bounce),
-            Actions.run(() -> {
-            Gdx.input.setInputProcessor(stage);
-            })
+            Actions.run(() -> Gdx.input.setInputProcessor(stage))
         ));
 
     }
@@ -238,7 +229,7 @@ public class LevelsScreenClass {
 
 
 
-    public float shapeRenderer(float superCont, float delta, Main game){
+    public float shapeRenderer(float superCont, Main game){
         if(state) {
             if (superCont > 0) {
                 superCont -= delta * 0.5f;
