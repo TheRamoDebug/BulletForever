@@ -10,10 +10,10 @@ public class ClassEnemy {
     public float health;
     public int attackProbability;
     public float velocityEnemy;
-    public Vector2 posicionEnemy;
+    public Vector2 positionEnemy;
     public float sizeEnemy;
     public float randomNumber;
-    public float oscilacionFija;
+    public float oscillation;
     public int typeOfMovement;
     public EnemyState currentState = EnemyState.ENTERING;
     public float targetHeight;
@@ -48,49 +48,49 @@ public class ClassEnemy {
 
     public ClassEnemy(float health,
                       int attackProbability,
-                      float velocityEnemy, Vector2 posicionEnemy,
-                      float sizeEnemy, float oscilacionFija, int typeOfMovement,
+                      float velocityEnemy, Vector2 positionEnemy,
+                      float sizeEnemy, float oscillation, int typeOfMovement,
                       boolean isTutorialWave) {
         this.health = health;
         this.attackProbability = attackProbability;
         collisionEnemy = new Rectangle();
         collisionEnemy.set(-100, -100, sizeEnemy / 2f, sizeEnemy / 2f);
         this.velocityEnemy = velocityEnemy;
-        this.posicionEnemy = posicionEnemy.cpy();
+        this.positionEnemy = positionEnemy.cpy();
         this.sizeEnemy = sizeEnemy;
-        this.oscilacionFija = oscilacionFija;
+        this.oscillation = oscillation;
         this.typeOfMovement = typeOfMovement;
         this.isTutorialWave = isTutorialWave;
     }
 
 
-    public void newPosition(float delta, float oscilacion, SpriteBatch batch, Sprite textureEnemy, int typeOfMovement) {
+    public void newPosition(float delta, float oscillation, SpriteBatch batch, Sprite textureEnemy, int typeOfMovement) {
 
         if (currentState == EnemyState.ENTERING) {
-            posicionEnemy.y -= velocityEnemy * delta;
+            positionEnemy.y -= velocityEnemy * delta;
 
-            if (posicionEnemy.y <= targetHeight) {
-                posicionEnemy.y = targetHeight;
+            if (positionEnemy.y <= targetHeight) {
+                positionEnemy.y = targetHeight;
                 currentState = EnemyState.IN_POSITION;
             }
 
         } else if (currentState == EnemyState.IN_POSITION) {
 
-            if (posicionEnemy.x > 14f) {
+            if (positionEnemy.x > 14f) {
                 isMovementDirection = false;
-            } else if (posicionEnemy.x < 0f) {
+            } else if (positionEnemy.x < 0f) {
                 isMovementDirection = true;
             }
 
             switch (typeOfMovement) {
                 case 1 -> {
-                    posicionEnemy = MovementsEnemys.movementType1(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
+                    positionEnemy = MovementsEnemies.movementType1(positionEnemy, delta, oscillation, velocityEnemy, this.oscillation, isMovementDirection);
                 }
                 case 2 -> {
-                    posicionEnemy = MovementsEnemys.movementType2(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
+                    positionEnemy = MovementsEnemies.movementType2(positionEnemy, delta, oscillation, velocityEnemy, this.oscillation, isMovementDirection);
                 }
                 case 3 -> {
-                    posicionEnemy = MovementsEnemys.movementType3(posicionEnemy, delta, oscilacion, velocityEnemy, oscilacionFija, isMovementDirection);
+                    positionEnemy = MovementsEnemies.movementType3(positionEnemy, delta, oscillation, velocityEnemy, this.oscillation, isMovementDirection);
                 }
                 default -> {
 
@@ -109,14 +109,14 @@ public class ClassEnemy {
         }
 
 
-        collisionEnemy.setPosition(posicionEnemy.x, posicionEnemy.y);
-        batch.draw(textureEnemy, posicionEnemy.x, posicionEnemy.y, sizeEnemy / 2, sizeEnemy / 2);
+        collisionEnemy.setPosition(positionEnemy.x, positionEnemy.y);
+        batch.draw(textureEnemy, positionEnemy.x, positionEnemy.y, sizeEnemy / 2, sizeEnemy / 2);
     }
 
     private void startLeaving() {
         currentState = EnemyState.LEAVING;
         float screenCenter = WORLD_WIDTH / 2f;
-        if(posicionEnemy.x < screenCenter) {
+        if(positionEnemy.x < screenCenter) {
             exitTargetVelocityX =-EXIT_SPEED;
         } else {
             exitTargetVelocityX = EXIT_SPEED;
@@ -125,12 +125,12 @@ public class ClassEnemy {
 
     private void updateLeavingMovement(float delta) {
         exitVelocityX += (exitTargetVelocityX - exitVelocityX) * EXIT_SMOOTHING * delta;
-        posicionEnemy.x += exitVelocityX * delta;
+        positionEnemy.x += exitVelocityX * delta;
     }
 
     public boolean isOutOfBounds() {
-        return posicionEnemy.x < -EXIT_MARGIN || posicionEnemy.x > WORLD_WIDTH + EXIT_MARGIN
-        || posicionEnemy.y < -EXIT_MARGIN || posicionEnemy.y > WORLD_HEIGHT + EXIT_MARGIN;
+        return positionEnemy.x < -EXIT_MARGIN || positionEnemy.x > WORLD_WIDTH + EXIT_MARGIN
+        || positionEnemy.y < -EXIT_MARGIN || positionEnemy.y > WORLD_HEIGHT + EXIT_MARGIN;
     }
 
 
@@ -145,16 +145,16 @@ public class ClassEnemy {
             return;
         }
         if (MathUtils.random() < delta * (1d / attackProbability) * 10f) {
-            c.shot(posicionEnemy.x, posicionEnemy.y, 3, 0, -7f);
+            c.shot(positionEnemy.x, positionEnemy.y, 3, 0, -7f);
         }
     }
 
     private void shootAtPlayer(ControllerBullets c, Vector2 playerPosition) {
-        Vector2 direction = new Vector2(playerPosition).sub(posicionEnemy);
+        Vector2 direction = new Vector2(playerPosition).sub(positionEnemy);
         direction.nor();
 
         float bulletSpeed = 6f;
-        c.shot(posicionEnemy.x, posicionEnemy.y, BULLET_SIZE, direction.x * bulletSpeed, direction.y * bulletSpeed);
+        c.shot(positionEnemy.x, positionEnemy.y, BULLET_SIZE, direction.x * bulletSpeed, direction.y * bulletSpeed);
 
     }
 }

@@ -7,20 +7,16 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.ArrayList;
 
 public class ControllerEnemies {
-    private ArrayList<ClassEnemy> enemies = new ArrayList<>();
-    private ClassEnemy enemyAuxiliar;
+    private final ArrayList<ClassEnemy> enemies = new ArrayList<>();
 
 
-    public ControllerEnemies() {
-    }
+    public ControllerEnemies() {}
 
-    public void addEnemy(ClassEnemy e) {
+    public void addEnemy(ClassEnemy e){
         this.enemies.add(e);
     }
 
-    public int getEnemiesCount() {
-        return enemies.size();
-    }
+    public int getEnemiesCount(){return enemies.size();}
 
 
     public boolean isCollidingWithEnemy(ClassBullets bullet, StatsClass statsClass) {
@@ -40,16 +36,16 @@ public class ControllerEnemies {
     }
 
 
-    public void movementEnemies(float delta, float oscilation, SpriteBatch c, Sprite textureEnemy, ControllerBullets bala, int typeOfMovement, Vector2 playerPosition) {
+    public void movementEnemies(float delta, float oscillation, SpriteBatch c, Sprite textureEnemy, ControllerBullets bala, Vector2 playerPosition){
 
-        for (int i = enemies.size() - 1; i >= 0; i--) {
+        for (int i = enemies.size() - 1; i >= 0; i--){
 
             if (enemies.get(i).isOutOfBounds()) {
                 enemies.remove(i);
                 continue;
             }
 
-            enemies.get(i).newPosition(delta, oscilation, c, textureEnemy, enemies.get(i).typeOfMovement);
+            enemies.get(i).newPosition(delta, oscillation, c, textureEnemy, enemies.get(i).typeOfMovement);
             enemies.get(i).drawEnemyAndShot(bala, delta, playerPosition);
         }
 

@@ -43,7 +43,7 @@ public class ScreenGameplay implements Screen {
 
     private ControllerBullets bulletsPlayer;
     private ControllerBullets bulletsEnemy;
-    private ControllerEnemies controllerMoreEnemys;
+    private ControllerEnemies controllerMoreEnemies;
 
 
     private Rectangle colisionPlayer;
@@ -60,7 +60,7 @@ public class ScreenGameplay implements Screen {
     private float superCont = 1;
     private float deltaFinal;
     private Vector2 movementPlayer;
-
+    private int level;
 
 
     public ScreenGameplay(Main game){
@@ -91,6 +91,7 @@ public class ScreenGameplay implements Screen {
         gameOverOverlay = new GameOverOverlay(viewportThird, game);
 
         movementPlayer = new Vector2(0f,0f);
+        level = Player.getNumberLevel();
         newController = new Controls();
 
         enemyTexture = new Texture("Sprites/Enemy1.png");
@@ -106,7 +107,7 @@ public class ScreenGameplay implements Screen {
         bulletsPlayer = new ControllerBullets();
         bulletsEnemy = new ControllerBullets();
 
-        controllerMoreEnemys = new ControllerEnemies();
+        controllerMoreEnemies = new ControllerEnemies();
 
         colisionPlayer = new Rectangle();
 
@@ -139,12 +140,12 @@ public class ScreenGameplay implements Screen {
 
         statsClass.actu();
 
-        //controller for the levels and more(like draw enemys, shots, draw the background and move the enemys
-        controllerLevelsNew.level1(game.batch, controllerMoreEnemys,bulletsEnemy , background, enemySprite, deltaFinal, movementPlayer);
+        //controller for the levels and more(like draw enemies, shots, draw the background and move the enemies
+        controllerLevelsNew.selectLevel(game.batch, controllerMoreEnemies, bulletsEnemy, background, enemySprite, deltaFinal, level, movementPlayer);
 
 
         //functions for draw bullets and collides
-        bulletsPlayer.drawBulletsAndCollide(game.batch, bullet, controllerMoreEnemys, statsClass);
+        bulletsPlayer.drawBulletsAndCollide(game.batch, bullet, controllerMoreEnemies, statsClass);
         bulletsEnemy.drawBulletsEnemies(game.batch, bullet, colisionPlayer);
 
 

@@ -3,11 +3,11 @@ package com.utilClasses;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 
 public class LevelsController {
-    private int[] enemysForLevel = {4,8,12,16,20,24,28,32,36,40};
+    private int[] enemiesForLevel = {4,8,12,16,20,24,28,32,36,40};
     private int[] contLevel = {};
     private int i = 0;
     private int contEnemyLevel = 0;
@@ -17,7 +17,33 @@ public class LevelsController {
 
     private float movementBackground = 0;
     private float oscillation = 0;
-    private float cont = -8;
+    private float cont = -3f;
+
+
+    public void selectLevel(SpriteBatch c, ControllerEnemies ce, ControllerBullets cbEnemy, Texture fondo, Sprite enemySprite, float delta, int level, Vector2 playerPosition){
+        switch (level){
+            case 1 -> {
+                level1(c, ce, cbEnemy, fondo, enemySprite, delta, playerPosition);
+            }
+            case 2 ->{
+                level2(c, ce, cbEnemy, fondo,enemySprite,delta);
+            }
+
+            case 3-> {
+                level3(c, ce, cbEnemy, fondo,enemySprite,delta);
+            }
+
+            case 4-> {
+                level4(c, ce, cbEnemy, fondo,enemySprite,delta);
+            }
+
+            default -> {
+
+            }
+        }
+
+
+    }
 
 
     public void BackgroundChange(SpriteBatch c, Texture fondo , float delta){
@@ -38,11 +64,11 @@ public class LevelsController {
 
         cont += delta;
 
-        oscillation += delta * 0.5;
+        oscillation += delta * 0.5f;
 
-        if (cont > 0.2 && enemysForLevel[i] != contEnemyLevel){
+        if (cont > 0.2 && enemiesForLevel[i] != contEnemyLevel){
             cont = 0;
-            oscillation += 1.5;
+            oscillation += 1.5f;
 
             float spawnX = 1f + MathUtils.random(WORLD_WIDTH - 2f);
             float spawnY = WORLD_HEIGHT + 1f;
@@ -55,24 +81,31 @@ public class LevelsController {
             contEnemyLevel += 1;
         }
 
-        if(contEnemyLevel >= enemysForLevel[i] - (i == 0 ? 0 : enemysForLevel[i-1]) && i < 9){
+        if(ce.getEnemiesCount() == 0 && i < 9){
             i += 1;
             contEnemyLevel = 0;
         }
 
 
-        ce.movementEnemies(delta, oscillation,c, enemySprite, cbEnemy, 1, playerPosition);
+        ce.movementEnemies(delta, oscillation, c, enemySprite, cbEnemy, playerPosition);
 
     }
 
 
 
-    public void level2(){
+    public void level2(SpriteBatch c, ControllerEnemies ce, ControllerBullets cbEnemy, Texture fondo, Sprite enemySprite, float delta){
 
 
     }
 
+    public void level3(SpriteBatch c, ControllerEnemies ce, ControllerBullets cbEnemy, Texture fondo, Sprite enemySprite, float delta){
 
 
+    }
+
+    public void level4(SpriteBatch c, ControllerEnemies ce, ControllerBullets cbEnemy, Texture fondo, Sprite enemySprite, float delta){
+
+
+    }
 
 }
