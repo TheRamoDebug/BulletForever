@@ -64,7 +64,7 @@ public class ScreenLevels implements Screen {
         Title = new Sprite(new Texture("BackgroundsEtc/TitleLevels.png"));
         background = new Sprite(new Texture("BackgroundsEtc/BackgroundScreenLevels.png"));
 
-        screenClass.organizedImmages(imagenLevel1,imagenLevel2,imagenLevel3,imagenLevel4,stage);
+        screenClass.organizedImages(imagenLevel1,imagenLevel2,imagenLevel3,imagenLevel4,stage, game);
     }
 
     @Override

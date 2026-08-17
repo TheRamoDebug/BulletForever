@@ -32,12 +32,11 @@ public class StatsClass implements Disposable {
         bitmapFont.getData().setScale(150f, 50f);
         bitmapFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-        text = new Label("HELLO WORLD", skin);
+        text = new Label("", skin);
         text.setFontScale(3);
-        text.setText("HELLO WORLD" + i);
         table.add(text).row();
 
-        text2 = new Label("WORLD HELLO: ", skin);
+        text2 = new Label("", skin);
         text2.setFontScale(3);
         table.add(text2).row();
         stage.addActor(table);
@@ -45,8 +44,9 @@ public class StatsClass implements Disposable {
 
 
     public void actu(){
-        text.setText("HELLO WORLD: " + i);
-        text2.setText("COINS: " + i * 4);
+        text.setText("COINS: " + i);
+        text2.setText("SCORE: " + i * 10);
+
     }
 
 

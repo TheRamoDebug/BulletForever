@@ -1,6 +1,7 @@
 package com.ScreensClasses;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mijuego.*;
+import com.utilClasses.MasterClass;
 import io.github.com.mygdx.game.Main;
 
 
@@ -28,20 +30,24 @@ public class MenuScreenClass {
 
     private float contState = 0;
 
-    private float destinyYtitle = WORLD_HEIGHT / 2f;
-    private float destinyXtitle = WORLD_WIDTH / 4f;
+    private final float destinyYtitle = WORLD_HEIGHT / 2f;
+    private final float destinyXtitle = WORLD_WIDTH / 4f;
+
+    private Screen screenSelect;
 
     private boolean oneShot = true;
     private boolean twoShot = false;
     private boolean state = true;
+    private boolean inputEnable = false;
 
     private Table table;
 
-    private TextButton buttonPlayLevels;
+    private TextButton buttonPlay;
     private TextButton buttonExit;
-    private TextButton buttonInfinite;
+    private TextButton buttonLevels;
     private TextButton buttonOptions;
 
+    private Main main;
 
     public void MenuEtc(Sprite gear, Sprite gear2){
         gear2.setPosition(WORLD_WIDTH / 2 - 4.3f, WORLD_HEIGHT / 2F);
@@ -56,25 +62,27 @@ public class MenuScreenClass {
 
 
 
-    public void initializeButtons(TextButton buttonPlayLevels, TextButton buttonExit, TextButton buttonInfinite, TextButton buttonOptions , Table table){
-        this.buttonPlayLevels = buttonPlayLevels;
+    public void initializeButtons(TextButton buttonPlay, TextButton buttonExit, TextButton buttonLevels, TextButton buttonOptions , Table table, Main main){
+        this.buttonPlay = buttonPlay;
         this.buttonExit = buttonExit;
-        this.buttonInfinite = buttonInfinite;
+        this.buttonLevels = buttonLevels;
         this.buttonOptions = buttonOptions;
         this.table = table;
+        this.main = main;
 
         addAnimation(buttonExit);
-        addAnimation(buttonInfinite);
+        addAnimation(buttonLevels);
         addAnimation(buttonOptions);
-        addAnimation(buttonPlayLevels);
+        addAnimation(buttonPlay);
 
-        buttonPlayLevels.addListener(new ClickListener() {
+        buttonPlay.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                buttonPlayLevels.setVisible(false);
-                buttonPlayLevels.setTouchable(Touchable.disabled);
+                buttonPlay.setVisible(false);
+                buttonPlay.setTouchable(Touchable.disabled);
                 twoShot = true;
                 state = false;
+                screenSelect = new ScreenGameplay(main);
             }
         });
 
@@ -86,10 +94,14 @@ public class MenuScreenClass {
             }
         });
 
-        buttonInfinite.addListener(new ClickListener() {
+        buttonLevels.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Iniciando partida...");
+                buttonLevels.setVisible(false);
+                buttonLevels.setTouchable(Touchable.disabled);
+                twoShot = true;
+                state = false;
+                screenSelect = new ScreenLevels(main);
 
             }
         });
@@ -98,20 +110,23 @@ public class MenuScreenClass {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                buttonOptions.setVisible(false);
+                buttonOptions.setTouchable(Touchable.disabled);
                 twoShot = true;
                 state = false;
+                screenSelect = new ScreenGameplay(main);
             }
         });
 
-        table.add(buttonPlayLevels).width(350).height(80).padBottom(15).padRight(15).row();
-        table.add(buttonInfinite).width(350).height(80).padBottom(15).padRight(15).row();
+        table.add(buttonPlay).width(350).height(80).padBottom(15).padRight(15).row();
+        table.add(buttonLevels).width(350).height(80).padBottom(15).padRight(15).row();
         table.add(buttonOptions).width(350).height(80).padBottom(15).padRight(15).row();
         table.add(buttonExit).width(350).height(80).padBottom(15).padRight(15).row();
 
         table.pack();
 
-        buttonPlayLevels.setOrigin(buttonPlayLevels.getWidth() / 2f, buttonPlayLevels.getHeight() / 2f);
-        buttonInfinite.setOrigin(buttonInfinite.getWidth() / 2f, buttonInfinite.getHeight() / 2f);
+        buttonPlay.setOrigin(buttonPlay.getWidth() / 2f, buttonPlay.getHeight() / 2f);
+        buttonLevels.setOrigin(buttonLevels.getWidth() / 2f, buttonLevels.getHeight() / 2f);
         buttonExit.setOrigin(buttonExit.getWidth() / 2f, buttonExit.getHeight() / 2f);
         buttonOptions.setOrigin(buttonOptions.getWidth() / 2f, buttonOptions.getHeight() / 2f);
     }
@@ -140,13 +155,14 @@ public class MenuScreenClass {
 
         if (oneShot) {
             oneShot = false;
-            animateButtonIn(buttonPlayLevels, 2f);
-            animateButtonIn(buttonInfinite,   2.1f);
+            animateButtonIn(buttonPlay, 2f);
+            animateButtonIn(buttonLevels,   2.1f);
             animateButtonIn(buttonOptions,    2.3f);
             animateButtonIn(buttonExit,       2.5f);
         }
 
-        if(buttonExit.getColor().a >= 0.99f) {
+        if(!inputEnable && buttonExit.getColor().a >= 0.99f) {
+            inputEnable = true;
             Gdx.input.setInputProcessor(stage);
         }
 
@@ -154,8 +170,8 @@ public class MenuScreenClass {
             twoShot = false;
             table.setTouchable(Touchable.disabled);
             Gdx.input.setInputProcessor(null);
-            animateButtonOut(buttonPlayLevels, 0.2f);
-            animateButtonOut(buttonInfinite,   0.4f);
+            animateButtonOut(buttonPlay, 0.2f);
+            animateButtonOut(buttonLevels,   0.4f);
             animateButtonOut(buttonOptions,    0.6f);
             animateButtonOut(buttonExit,       0.8f);
         }
@@ -262,7 +278,9 @@ public class MenuScreenClass {
                superCont += delta * 0.5f;
            } else {
                superCont = 1;
-               game.setScreen(new ScreenLevels(game));
+               Screen screen = game.getScreen();
+               game.setScreen(screenSelect);
+               screen.dispose();
            }
 
            game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

@@ -1,7 +1,5 @@
 package com.utilClasses;
 
-import com.badlogic.gdx.Preferences;
-
 public class Player{
     private static int health;
     private static int levelOfPlayer;
@@ -10,26 +8,8 @@ public class Player{
     private static int damage;
 
 
-    public static void loadInformation(){
-        Preferences prefs = SettingsClass.getPrefs();
 
-        coins = prefs.getInteger("coins", 0);
-        health = prefs.getInteger("health", 3);
-        numberLevel = prefs.getInteger("numberLevel", 1);
-        levelOfPlayer = prefs.getInteger("levelPlayer", 1);
-        damage = prefs.getInteger("damage", 1);
-    }
 
-    public static void saveInformation(){
-        Preferences prefs = SettingsClass.getPrefs();
-
-        prefs.putInteger("coins", coins);
-        prefs.putInteger("health", health);
-        prefs.putInteger("numberLevel", numberLevel);
-        prefs.putInteger("levelPlayer", levelOfPlayer);
-        prefs.putInteger("damage", damage);
-        prefs.flush();
-    }
 
     public static void setLessHealth(float lessHealth) {
         health -= lessHealth;

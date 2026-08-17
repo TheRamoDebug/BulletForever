@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.utilClasses.MasterClass;
 import io.github.com.mygdx.game.Main;
 
 public class GameOverOverlay implements Disposable {
@@ -37,7 +38,7 @@ public class GameOverOverlay implements Disposable {
         table.bottom().padBottom(150);
 
         BitmapFont titleFont = skin.getFont("title");
-        titleFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        titleFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
 
 
@@ -62,23 +63,18 @@ public class GameOverOverlay implements Disposable {
         retryButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y){
-                Screen vieja = game.getScreen();
+                Screen screen = game.getScreen();
                 game.setScreen(new ScreenGameplay(game));
-
-                if (vieja != null) {
-                    vieja.dispose();
-                }
+                screen.dispose();
             }});
 
         menuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y){
-                Screen vieja = game.getScreen();
+                Screen screen = game.getScreen();
                 game.setScreen(new ScreenMenu(game));
-
-                if (vieja != null) {
-                    vieja.dispose();
-                }
+                MasterClass.stopMusicGameplay();
+                screen.dispose();
             }
         });
 

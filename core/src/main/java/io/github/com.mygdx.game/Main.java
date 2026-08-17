@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mijuego.*;
+import com.utilClasses.MasterClass;
+import com.utilClasses.Player;
 
 public class Main extends Game {
 
@@ -13,9 +15,10 @@ public class Main extends Game {
 
     @Override
     public void create(){
+        Player.loadInformation();
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
-        this.setScreen(new ScreenGameplay(this));
+        this.setScreen(new ScreenMenu(this));
     }
 
     @Override
@@ -28,9 +31,11 @@ public class Main extends Game {
 
     @Override
     public void dispose(){
+        Player.saveInformation();
         super.dispose();
         batch.dispose();
         shapeRenderer.dispose();
+        MasterClass.dispose();
     }
 
 }
