@@ -2,6 +2,7 @@ package com.mijuego;
 
 import com.ScreensClasses.LevelsScreenClass;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,7 +21,6 @@ public class ScreenLevels implements Screen {
     private Sprite background;
     private Sprite Title;
     private Sprite Thunder;
-    private Texture iconlevel1;
 
 
     private OrthographicCamera camera;
@@ -50,21 +50,13 @@ public class ScreenLevels implements Screen {
 
         stage = new Stage(new StretchViewport(1280, 720));
         Gdx.input.setInputProcessor(null);
-        iconlevel1 = new Texture("things/iconolevel1.jpg");
-        Image imagenLevel1 = new Image(iconlevel1);
-        Image imagenLevel2 = new Image(iconlevel1);
-        Image imagenLevel3 = new Image(iconlevel1);
-        Image imagenLevel4 = new Image(iconlevel1);
-
-
-
 
 
         Thunder = new Sprite(new Texture("things/thunderV2.png"));
         Title = new Sprite(new Texture("BackgroundsEtc/TitleLevels.png"));
         background = new Sprite(new Texture("BackgroundsEtc/BackgroundScreenLevels.png"));
 
-        screenClass.organizedImages(imagenLevel1,imagenLevel2,imagenLevel3,imagenLevel4,stage, game);
+        screenClass.organizedImages(stage, game);
     }
 
     @Override
@@ -76,6 +68,7 @@ public class ScreenLevels implements Screen {
         game.batch.begin();
 
         screenClass.Background(background,Thunder, delta, game.batch);
+
 
 
         cont += delta;
@@ -118,9 +111,8 @@ public class ScreenLevels implements Screen {
         background.getTexture().dispose();
         Title.getTexture().dispose();
         Thunder.getTexture().dispose();
-        iconlevel1.dispose();
         stage.dispose();
-
+        screenClass.dispose();
     }
 
 }

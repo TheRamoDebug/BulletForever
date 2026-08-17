@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
 
 
 public class ControllerBullets {
@@ -54,26 +56,27 @@ public class ControllerBullets {
 
 
             if (b.state) {
-                c.draw(bullet, b.position.x, b.position.y, b.radio / 16f, b.radio / 6f);
+                c.draw(bullet, b.position.x, b.position.y, 0.2f, 0.2f);
             }
         }
     }
 
 
 
-    public void drawBulletsEnemies(SpriteBatch c, Texture bullet, Rectangle collisionPlayer){
+    public void drawBulletsEnemies(SpriteBatch c, Texture bullet, Circle collisionPlayer){
         for (int i = balasActivas.size - 1; i >= 0; i--) {
             ClassBullets b = balasActivas.get(i);
 
-            if (b.collision.overlaps(collisionPlayer)) {
-                Player.setLessHealth(1);
+            if (Intersector.overlaps(collisionPlayer, b.collision)) {
+                Player.setLessHealth();
+                MasterClass.planeDamage();
                 b.state = false;
             }
 
             if (b.state) {
-                c.draw(bullet, b.position.x, b.position.y, b.radio / 16f, b.radio / 6f);
-
-            } else {
+                c.draw(bullet, b.position.x, b.position.y, 0.2f, 0.2f);
+            }
+            else {
                 balasActivas.removeIndex(i);
                 balaPool.free(b);
             }

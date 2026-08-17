@@ -5,18 +5,17 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
 public class MasterClass{
-    private static float volumeSounds;
     private static final Sound shotPlayer = Gdx.audio.newSound(Gdx.files.internal("Sounds/shotSound.mp3"));
+    private static final Sound damagePlayer = Gdx.audio.newSound(Gdx.files.internal("Sounds/damage.mp3"));
     private static final Music backgroundMusicGameplay = Gdx.audio.newMusic(Gdx.files.internal("Music/backMusic.mp3"));
     private static final Music backgroundMusicMenu = Gdx.audio.newMusic(Gdx.files.internal("Music/backgroundMenuMusic.mp3"));
 
-    public MasterClass(){}
-
-    public static void setVolumeSounds(float volumeOfSound){
-        volumeSounds = volumeOfSound;
-    }
 
     public static Sound getShotPlayer(){return shotPlayer;}
+
+    public static void planeDamage(){
+        damagePlayer.play();
+    }
 
     public static void stopMusicMenu(){
         backgroundMusicMenu.stop();

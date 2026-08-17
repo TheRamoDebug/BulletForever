@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mijuego.*;
 import com.utilClasses.MasterClass;
+import com.utilClasses.Player;
 import io.github.com.mygdx.game.Main;
 
 
@@ -82,7 +83,7 @@ public class MenuScreenClass {
                 buttonPlay.setTouchable(Touchable.disabled);
                 twoShot = true;
                 state = false;
-                screenSelect = new ScreenGameplay(main);
+                screenSelect = new ScreenGameplay(main, Player.getNumberLevel());
             }
         });
 
@@ -114,7 +115,7 @@ public class MenuScreenClass {
                 buttonOptions.setTouchable(Touchable.disabled);
                 twoShot = true;
                 state = false;
-                screenSelect = new ScreenGameplay(main);
+                screenSelect = new ScreenGameplay(main, -1);
             }
         });
 

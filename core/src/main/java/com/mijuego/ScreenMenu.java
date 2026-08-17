@@ -84,7 +84,7 @@ public class ScreenMenu implements Screen{
         TextButton buttonPlay = new TextButton("JUGAR", skin);
         TextButton buttonLevels = new TextButton("NIVELES", skin);
         TextButton buttonExit = new TextButton("SALIR", skin);
-        TextButton buttonOptions = new TextButton("OPCIONES", skin);
+        TextButton buttonOptions = new TextButton("MODO INFINITO", skin);
 
 
         buttonPlay.setTransform(true);
