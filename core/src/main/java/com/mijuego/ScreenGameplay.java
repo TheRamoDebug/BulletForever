@@ -140,7 +140,7 @@ public class ScreenGameplay implements Screen {
         statsClass.actu();
 
         //controller for the levels and more(like draw enemys, shots, draw the background and move the enemys
-        controllerLevelsNew.level1(game.batch, controllerMoreEnemys,bulletsEnemy , background, enemySprite, deltaFinal);
+        controllerLevelsNew.level1(game.batch, controllerMoreEnemys,bulletsEnemy , background, enemySprite, deltaFinal, movementPlayer);
 
 
         //functions for draw bullets and collides

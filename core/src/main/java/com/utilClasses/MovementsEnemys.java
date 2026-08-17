@@ -21,7 +21,9 @@ public class MovementsEnemys {
         if (!isMovementDirection) {
             posicionEnemy.x -= velocityEnemy * delta;
         }
-        posicionEnemy.y = (MathUtils.sin(oscilacionFija + oscilacion * velocityEnemy) * 1.5f) + 5f;
+
+        float targetY = (MathUtils.sin(oscilacionFija + oscilacion * velocityEnemy) * 1.5f) + 5f;
+        posicionEnemy.y += (targetY - posicionEnemy.y) * 3f * delta;
 
         return posicionEnemy;
     }
