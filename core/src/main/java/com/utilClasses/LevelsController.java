@@ -7,10 +7,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class LevelsController {
-    private int[] enemiesForLevel = {4,8,12,16,20,24,28,32,36,40};
-    private int[] contLevel = {};
-    private int i = 0;
-    private int contEnemyLevel = 0;
+    private int wave = 0;
+    private boolean waveCreated = false;
+    private int wavePhase = 0;
+    private float waveTimer = 0f;
+    private static final float FIRST_WAVE_DELAY = 5f;
 
     private static final float WORLD_WIDTH = 16f;
     private static final float WORLD_HEIGHT = 9f;
@@ -63,31 +64,75 @@ public class LevelsController {
         BackgroundChange(c, fondo, delta);
 
         cont += delta;
-
         oscillation += delta * 0.5f;
+        waveTimer += delta;
 
-        if (cont > 0.2 && enemiesForLevel[i] != contEnemyLevel){
-            cont = 0;
-            oscillation += 1.5f;
+        //WAVE 1
+        if (wave == 0 && !waveCreated && waveTimer >= FIRST_WAVE_DELAY) {
 
-            float spawnX = 1f + MathUtils.random(WORLD_WIDTH - 2f);
-            float spawnY = WORLD_HEIGHT + 1f;
-            Vector2 spawnPosition = new Vector2(spawnX, spawnY);
+            float startY = WORLD_HEIGHT + 1f;
+            for (int row = 0; row < 4; row++) {
+                float y = startY + (3 - row) * 0.9f;
 
-            ClassEnemy auxiliarEnemy = new ClassEnemy(100, 20, 4, spawnPosition, 3, oscillation, 1, true);
-            auxiliarEnemy.targetHeight = WORLD_HEIGHT / 2f;
-            ce.addEnemy(auxiliarEnemy);
+                ClassEnemy enemyLeft = new ClassEnemy(100, 20, 4, new Vector2(7.2f, y), 2, oscillation, 0, 1, ClassEnemy.ShotPattern.TARGETED, true);
+                enemyLeft.waveRow = row;
+                enemyLeft.targetHeight = 5.5f + row*0.55f;
 
-            contEnemyLevel += 1;
+                ClassEnemy enemyRight = new ClassEnemy(100, 20, 4, new Vector2(8.8f, y), 2, oscillation, 0, 1, ClassEnemy.ShotPattern.TARGETED,  true);
+                enemyRight.waveRow = row;
+                enemyRight.targetHeight = 5.5f + row*0.55f;
+
+                enemyLeft.leaveDelay = 3f;
+                enemyRight.leaveDelay = 3f;
+
+                ce.addEnemy(enemyLeft);
+                ce.addEnemy(enemyRight);
+            }
+            waveCreated = true;
         }
 
-        if(ce.getEnemiesCount() == 0 && i < 9){
-            i += 1;
-            contEnemyLevel = 0;
-        }
+        //WAVE 2 - phase 1
+            if (wave == 1 && !waveCreated) {
+                float startY = WORLD_HEIGHT + 1f;
+                for (int row = 0; row < 3; row++) {
+                    float y = startY + (2 + row) * 0.9f;
 
+                    float leftX = 7.2f - row * 1.5f;
+                    float rightX = 8.8f + row * 1.5f;
+
+                    ClassEnemy enemyLeft = new ClassEnemy(100, 20, 4,new Vector2(leftX,y), 2, oscillation, 0, 1, ClassEnemy.ShotPattern.TARGETED, false);
+                    ClassEnemy enemyRight = new ClassEnemy(100, 20, 4, new Vector2(rightX, y), 2, oscillation, 0, 1, ClassEnemy.ShotPattern.TARGETED,  false);
+
+                    enemyLeft.waveRow = row;
+                    enemyRight.waveRow = row;
+
+                    enemyLeft.entryDelay = row * 0.5f;
+                    enemyRight.entryDelay = row * 0.5f;
+
+                    enemyLeft.targetHeight = 4.5f + row*0.8f;
+                    enemyRight.targetHeight = 4.5f + row*0.8f;
+
+                    enemyLeft.singleShot = true;
+                    enemyRight.singleShot = true;
+
+                    enemyLeft.leaveDelay = 2f;
+                    enemyRight.leaveDelay = 2f;
+
+                    enemyLeft.shotOrder = row * 2;
+                    enemyRight.shotOrder = row * 2+1;
+
+                    ce.addEnemy(enemyLeft);
+                    ce.addEnemy(enemyRight);
+                }
+                waveCreated = true;
+            }
 
         ce.movementEnemies(delta, oscillation, c, enemySprite, cbEnemy, playerPosition);
+
+        if(waveCreated && ce.getEnemiesCount() == 0) {
+            wave++;
+            waveCreated = false;
+        }
 
     }
 

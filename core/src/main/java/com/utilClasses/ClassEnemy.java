@@ -15,17 +15,31 @@ public class ClassEnemy {
     public float randomNumber;
     public float oscillation;
     public int typeOfMovement;
+    public int typeOfEnemy;
+
+    public enum ShotPattern {
+        NONE,
+        TARGETED,
+        RADIAL
+    }
+    public ShotPattern shotPattern;
+
     public EnemyState currentState = EnemyState.ENTERING;
     public float targetHeight;
-
-    public boolean isMovementDirection = MathUtils.randomBoolean();
+    public boolean isMovementDirection = true;
+    public int waveRow;
+    public float shotTimer = 0f;
+    public float entryDelay = 0f;
+    public float entryTimer = 0f;
+    public boolean singleShot = false;
+    public int shotOrder = 0;
 
     // TUTORIAL WAVE (LVL1)//
     public boolean isTutorialWave;
     public boolean hasShot = false;
     public float leaveTimer = 0f;
-
-    private static final float LEAVE_TIMER = 4f;
+    private static final float LEAVE_TIMER = 3f;
+    public float leaveDelay = LEAVE_TIMER;
 
     //EXIT MOVEMENT AND CONSTANTS
     private float exitVelocityX = 0f;
@@ -49,7 +63,8 @@ public class ClassEnemy {
     public ClassEnemy(float health,
                       int attackProbability,
                       float velocityEnemy, Vector2 positionEnemy,
-                      float sizeEnemy, float oscillation, int typeOfMovement,
+                      float sizeEnemy, float oscillation, int typeOfMovement,int typeOfEnemy,
+                      ShotPattern shotPattern,
                       boolean isTutorialWave) {
         this.health = health;
         this.attackProbability = attackProbability;
@@ -60,6 +75,8 @@ public class ClassEnemy {
         this.sizeEnemy = sizeEnemy;
         this.oscillation = oscillation;
         this.typeOfMovement = typeOfMovement;
+        this.typeOfEnemy = typeOfEnemy;
+        this.shotPattern = shotPattern;
         this.isTutorialWave = isTutorialWave;
     }
 
@@ -67,13 +84,16 @@ public class ClassEnemy {
     public void newPosition(float delta, float oscillation, SpriteBatch batch, Sprite textureEnemy, int typeOfMovement) {
 
         if (currentState == EnemyState.ENTERING) {
-            positionEnemy.y -= velocityEnemy * delta;
+            if(entryTimer < entryDelay) {
+                entryTimer += delta;
+            } else {
+                positionEnemy.y -= velocityEnemy * delta;
 
-            if (positionEnemy.y <= targetHeight) {
-                positionEnemy.y = targetHeight;
-                currentState = EnemyState.IN_POSITION;
+                if (positionEnemy.y <= targetHeight) {
+                    positionEnemy.y = targetHeight;
+                    currentState = EnemyState.IN_POSITION;
+                }
             }
-
         } else if (currentState == EnemyState.IN_POSITION) {
 
             if (positionEnemy.x > 14f) {
@@ -96,14 +116,6 @@ public class ClassEnemy {
 
                 }
             }
-
-            if (isTutorialWave && hasShot) {
-                leaveTimer -= delta;
-                if (leaveTimer <= 0f) {
-                    startLeaving();
-                }
-            }
-
         } else if (currentState == EnemyState.LEAVING) {
             updateLeavingMovement(delta);
         }
@@ -135,17 +147,73 @@ public class ClassEnemy {
 
 
     public void drawEnemyAndShot(ControllerBullets c, float delta, Vector2 playerPosition) {
+        if(singleShot) {
+            if(currentState == EnemyState.IN_POSITION && !hasShot) {
+                shotTimer += delta;
+                float delay = 0.5f + shotOrder * 0.5f;
 
-        if (isTutorialWave) {
-            if (currentState == EnemyState.IN_POSITION && !hasShot) {
-                shootAtPlayer(c, playerPosition);
-                hasShot = true;
-                leaveTimer = LEAVE_TIMER;
+                if(shotTimer >= delay) {
+                    switch(shotPattern) {
+                        case TARGETED -> {shootAtPlayer(c, playerPosition);
+                        }
+                        case RADIAL -> {shootRadial(c);
+                        }
+                        case NONE -> {
+                        }
+                    }
+                    hasShot = true;
+                    leaveTimer = leaveDelay;
+                }
+            }
+
+            if (hasShot) {
+                leaveTimer -= delta;
+
+                if (leaveTimer <= 0f) {
+                    startLeaving();
+                }
             }
             return;
         }
-        if (MathUtils.random() < delta * (1d / attackProbability) * 10f) {
-            c.shot(positionEnemy.x, positionEnemy.y, 3, 0, -7f);
+
+        if (isTutorialWave) {
+            if (currentState == EnemyState.IN_POSITION && !hasShot) {
+                shotTimer += delta;
+                float delay = 1f + waveRow * 0.5f;
+                if (shotTimer >= delay) {
+
+                    switch (shotPattern) {
+                        case TARGETED -> shootAtPlayer(c, playerPosition);
+                        case RADIAL -> shootRadial(c);
+                        case NONE -> {
+                        }
+                    }
+
+                    hasShot = true;
+                    leaveTimer = LEAVE_TIMER;
+                }
+            }
+            if(hasShot) {
+                leaveTimer -= delta;
+                if (leaveTimer <= 0f) {
+                    startLeaving();
+                }
+            }
+          return;
+        }
+        switch (shotPattern) {
+            case TARGETED -> {
+                if (MathUtils.random() < delta * (1d / attackProbability) * 10f) {
+                    shootAtPlayer(c, playerPosition);
+                }
+            }
+            case RADIAL -> {
+                if (MathUtils.random() < delta * (1d / attackProbability) * 10f) {
+                    shootRadial(c);
+                }
+            }
+            case NONE -> {
+            }
         }
     }
 
@@ -157,4 +225,20 @@ public class ClassEnemy {
         c.shot(positionEnemy.x, positionEnemy.y, BULLET_SIZE, direction.x * bulletSpeed, direction.y * bulletSpeed);
 
     }
+
+    private void shootRadial(ControllerBullets c) {
+        int numberOfBullets = 8;
+        float bulletSpeed = 4f;
+
+        for(int i = 0; i < numberOfBullets; i++) {
+            float angle = (360f / numberOfBullets) * i;
+            float velX = MathUtils.cosDeg(angle) * bulletSpeed;
+            float velY = MathUtils.sinDeg(angle) * bulletSpeed;
+
+            c.shot(positionEnemy.x, positionEnemy.y, 3, velX, velY);
+
+        }
+
+    }
+
 }

@@ -19,7 +19,7 @@ public class StatsClass implements Disposable {
     private BitmapFont bitmapFont;
     private Label text;
     private Label text2;
-    private int i = Player.getCoins();
+    private int i = Player.getEnemiesDeath();
 
     public StatsClass(Viewport viewport, SpriteBatch batch) {
         stage = new Stage(viewport, batch);
@@ -44,7 +44,7 @@ public class StatsClass implements Disposable {
 
 
     public void actu(){
-        text.setText("COINS: " + i);
+        text.setText("ENEMIES DEATHS: " + i);
         text2.setText("SCORE: " + i * 10);
 
     }

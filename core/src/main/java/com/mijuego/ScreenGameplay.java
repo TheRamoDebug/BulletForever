@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.*;
@@ -44,7 +45,7 @@ public class ScreenGameplay implements Screen {
     private ControllerEnemies controllerMoreEnemies;
 
 
-    private Rectangle colisionPlayer;
+    private Circle colisionPlayer;
 
 
     private LevelsController controllerLevelsNew;
@@ -89,12 +90,12 @@ public class ScreenGameplay implements Screen {
 
 
         //this is the two viewports
-        viewportFirst = new StretchViewport(WORLD_WIDTH , WORLD_HEIGHT, cameraFirst);
+        viewportFirst = new FitViewport(WORLD_WIDTH , WORLD_HEIGHT, cameraFirst);
         viewportSecond = new StretchViewport(800,600, cameraSecond);
         viewportThird = new StretchViewport(1280, 720, cameraThird);
         gameOverOverlay = new GameOverOverlay(viewportThird, game);
 
-        movementPlayer = new Vector2(0f,0f);
+        movementPlayer = new Vector2(WORLD_WIDTH / 2f - 0.2f, 0.5f);
         newController = new Controls();
 
         enemyTexture = new Texture("Sprites/Enemy1.png");
@@ -112,7 +113,7 @@ public class ScreenGameplay implements Screen {
 
         controllerMoreEnemies = new ControllerEnemies();
 
-        colisionPlayer = new Rectangle();
+        colisionPlayer = new Circle();
 
         statsClass = new StatsClass(viewportSecond, game.batch);
 
@@ -154,8 +155,8 @@ public class ScreenGameplay implements Screen {
 
 
         //functions for player
-        game.batch.draw(plane, movementPlayer.x, movementPlayer.y, 0.8f, 0.8f );
-        colisionPlayer.set(movementPlayer.x + 0.4f - ((0.8f / 2) / 2) , movementPlayer.y, 0.8f / 2, 0.8f);
+        game.batch.draw(plane, movementPlayer.x, movementPlayer.y, 0.6f, 0.6f );
+        colisionPlayer.set(movementPlayer.x + 0.3f, movementPlayer.y + 0.3f, 0.07f);
 
         if (Player.isAlive()) {
             newController.controlsKeysShots(bulletsPlayer, movementPlayer, MasterClass.getShotPlayer());

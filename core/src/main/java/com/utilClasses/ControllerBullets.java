@@ -3,8 +3,11 @@ package com.utilClasses;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+
 
 
 public class ControllerBullets {
@@ -54,26 +57,27 @@ public class ControllerBullets {
 
 
             if (b.state) {
-                c.draw(bullet, b.position.x, b.position.y, b.radio / 16f, b.radio / 6f);
+                c.draw(bullet, b.position.x, b.position.y, 0.2f, 0.2f);
             }
         }
     }
 
 
 
-    public void drawBulletsEnemies(SpriteBatch c, Texture bullet, Rectangle collisionPlayer){
+    public void drawBulletsEnemies(SpriteBatch c, Texture bullet, Circle collisionPlayer){
         for (int i = balasActivas.size - 1; i >= 0; i--) {
             ClassBullets b = balasActivas.get(i);
 
-            if (b.collision.overlaps(collisionPlayer)) {
-                Player.setLessHealth(1);
+            if (Intersector.overlaps(collisionPlayer, b.collision)) {
+                Player.setLessHealth();
                 b.state = false;
             }
 
             if (b.state) {
-                c.draw(bullet, b.position.x, b.position.y, b.radio / 16f, b.radio / 6f);
+                c.draw(bullet, b.position.x, b.position.y, 0.2f, 0.2f);
+            }
 
-            } else {
+             else {
                 balasActivas.removeIndex(i);
                 balaPool.free(b);
             }
