@@ -2,6 +2,7 @@ package com.utilClasses;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Array;
@@ -12,6 +13,11 @@ import com.badlogic.gdx.utils.Pool;
 public class ControllerBullets {
 
     public final Array<ClassBullets> balasActivas = new Array<>();
+
+    private static final float BULLET_ORIGIN_X = 0.08f;
+    private static final float BULLET_ORIGIN_Y = 0.175f;
+    private static final float BULLET_WIDTH = 0.16f;
+    private static final float BULLET_HEIGHT = 0.35f;
 
 
     public final Pool<ClassBullets> balaPool = new Pool<>() {
@@ -56,7 +62,9 @@ public class ControllerBullets {
 
 
             if (b.state) {
-                c.draw(bullet, b.position.x, b.position.y, 0.2f, 0.2f);
+                float angle = b.velocity.angleDeg() - 90f;
+                TextureRegion region = new TextureRegion(bullet);
+                c.draw(region, b.position.x, b.position.y, BULLET_ORIGIN_X, BULLET_ORIGIN_Y, BULLET_WIDTH, BULLET_HEIGHT, 1f, 1f, angle);
             }
         }
     }
@@ -74,7 +82,9 @@ public class ControllerBullets {
             }
 
             if (b.state) {
-                c.draw(bullet, b.position.x, b.position.y, 0.2f, 0.2f);
+                float angle = b.velocity.angleDeg() - 90f;
+                TextureRegion region = new TextureRegion(bullet);
+                c.draw(region, b.position.x, b.position.y, BULLET_ORIGIN_X, BULLET_ORIGIN_Y, BULLET_WIDTH, BULLET_HEIGHT, 1f, 1f, angle);
             }
             else {
                 balasActivas.removeIndex(i);

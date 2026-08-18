@@ -47,6 +47,12 @@ public class ClassEnemy {
     private static final float EXIT_SMOOTHING = 3f;
     private static final float EXIT_SPEED = 5f;
 
+    private int radialRoundsRemaining = 0;
+    private float radialRoundTimer = 0f;
+    private static final float RADIAL_ROUND_INTERVAL = 0.1f;
+    private static final int RADIAL_ROUNDS = 5;
+    private static final int RADIAL_DIRECTIONS = 16;
+
     private static final float WORLD_HEIGHT = 9f;
     private static final float WORLD_WIDTH = 16f;
     private static final float EXIT_MARGIN = 2f;
@@ -147,6 +153,8 @@ public class ClassEnemy {
 
 
     public void drawEnemyAndShot(ControllerBullets c, float delta, Vector2 playerPosition) {
+        updateRadialBurst(delta, c);
+
         if(singleShot) {
             if(currentState == EnemyState.IN_POSITION && !hasShot) {
                 shotTimer += delta;
@@ -227,18 +235,32 @@ public class ClassEnemy {
     }
 
     private void shootRadial(ControllerBullets c) {
-        int numberOfBullets = 8;
+        fireRadialRound(c);
+        radialRoundsRemaining = RADIAL_ROUNDS - 1;
+        radialRoundTimer = 0f;
+    }
+
+    private void fireRadialRound(ControllerBullets c) {
         float bulletSpeed = 4f;
 
-        for(int i = 0; i < numberOfBullets; i++) {
-            float angle = (360f / numberOfBullets) * i;
+        for (int i = 0; i < RADIAL_DIRECTIONS; i++) {
+            float angle = (360f / RADIAL_DIRECTIONS) * i;
             float velX = MathUtils.cosDeg(angle) * bulletSpeed;
             float velY = MathUtils.sinDeg(angle) * bulletSpeed;
 
-            c.shot(positionEnemy.x, positionEnemy.y, 3, velX, velY);
-
+            c.shot(positionEnemy.x, positionEnemy.y, BULLET_SIZE, velX, velY);
         }
+    }
 
+    private void updateRadialBurst(float delta, ControllerBullets c) {
+        if (radialRoundsRemaining > 0) {
+            radialRoundTimer += delta;
+            if (radialRoundTimer >= RADIAL_ROUND_INTERVAL) {
+                radialRoundTimer = 0f;
+                fireRadialRound(c);
+                radialRoundsRemaining--;
+            }
+        }
     }
 
 }
