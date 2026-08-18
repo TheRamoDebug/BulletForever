@@ -87,15 +87,6 @@ public class MovementsEnemies {
         return positionEnemy;
     }
 
-
-    public static void zigzagHorizontal(Vector2 positionEnemy, float delta, float velocityEnemy, boolean isMovementDirection) {
-        if (isMovementDirection) {
-            positionEnemy.x += velocityEnemy * delta;
-        } else {
-            positionEnemy.x -= velocityEnemy * delta;
-        }
-    }
-
     public static void zigzagHorizontal(Vector2 positionEnemy, float delta, float speedX, float phase, float globalOscillation, float baseHeight) {
         positionEnemy.x += speedX * delta;
         float targetY = baseHeight + MathUtils.sin(phase + globalOscillation * 2f) * 0.8f;

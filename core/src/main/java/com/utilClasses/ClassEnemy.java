@@ -62,7 +62,8 @@ public class ClassEnemy {
     public boolean useCurvePath = false;
     private Vector2 curveStart, curveControl,curveEnd;
     private float curveT = 0f;
-    private static final float CURVE_DURATION = 2.5f;
+    private static final float CURVE_DURATION = 4f;
+    public int curvePasses = 1;
 
     //Radial shoot stuff
     private int radialRoundsRemaining = 0;
@@ -176,7 +177,20 @@ public class ClassEnemy {
             return;
         }
         curveT += delta / CURVE_DURATION;
-        if(curveT > 1f) curveT = 1f;
+
+        if (curveT >= 1f) {
+            curvePasses--;
+            if (curvePasses > 0) {
+                curveT = 0f;
+                positionEnemy = curveStart.cpy();
+            } else {
+                curveT = 1f;
+                useCurvePath = false;
+                currentState = EnemyState.LEAVING;
+                startLeaving();
+                return;
+            }
+        }
 
         float oneMinusT = 1f - curveT;
         positionEnemy.x = oneMinusT * oneMinusT * curveStart.x + 2 * oneMinusT * curveT * curveControl.x + curveT * curveT * curveEnd.x;

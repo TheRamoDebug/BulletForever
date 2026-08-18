@@ -189,6 +189,7 @@ public class LevelsController {
             sideLeft.entryDelay = 0f;
             sideLeft.leaveDelay = 2f;
             sideLeft.setShotsRemaining(3);
+            sideLeft.setRadialIntensity(18, 1);
 
             ClassEnemy sideRight = new ClassEnemy(200, 20, 4, new Vector2(13f, startY), 2, oscillation, 0, 2, ClassEnemy.ShotPattern.RADIAL, false);
             sideRight.targetHeight = 5f;
@@ -196,6 +197,7 @@ public class LevelsController {
             sideRight.entryDelay = 3.5f;
             sideRight.leaveDelay = 1f;
             sideRight.setShotsRemaining(3);
+            sideRight.setRadialIntensity(18, 1);
 
             ce.addEnemy(sideLeft);
             ce.addEnemy(sideRight);
@@ -205,7 +207,7 @@ public class LevelsController {
         //WAVE 2 - PHASE 3
 
         if(wave == 3 && !waveCreated) {
-            Vector2 curveStart = new Vector2(17f, 3f);
+            Vector2 curveStart = new Vector2(17f, 5f);
             Vector2 curveControl = new Vector2(3f, 3f);
             Vector2 curveEnd = new Vector2(9f, 10f);
 
@@ -214,21 +216,35 @@ public class LevelsController {
                 curveEnemy.entryDelay = i * 0.2f;
                 curveEnemy.singleShot = true;
                 curveEnemy.shotOrder = 0;
+                curveEnemy.curvePasses = 3;
                 curveEnemy.setCurvePath(curveStart, curveControl, curveEnd);
                 ce.addEnemy(curveEnemy);
             }
 
-            for(int i = 0; i < 5; i++) {
-                float x = 2f+ i * 3f;
+            for (int row = 0; row < 3; row++) {
+                float targetH = 4f + row * 1.5f;
+                float leftX = 3f + row * 1.5f;
+                float rightX = 13f - row * 1.5f;
 
-                ClassEnemy radialEnemy = new ClassEnemy(100, 20, 4, new Vector2(x, WORLD_HEIGHT + 1f),2, oscillation, 1, 1, ClassEnemy.ShotPattern.RADIAL, false);
-                radialEnemy.entryDelay = i * 0.15f;
-                radialEnemy.targetHeight = 6f;
-                radialEnemy.singleShot = true;
-                radialEnemy.shotOrder = i;
-                radialEnemy.leaveDelay = 1f;
-                radialEnemy.setRadialIntensity(8, 2);
-                ce.addEnemy(radialEnemy);
+                ClassEnemy leftEnemy = new ClassEnemy(100, 20, 4, new Vector2(leftX, WORLD_HEIGHT + 1f), 2, oscillation, 0, 1, ClassEnemy.ShotPattern.RADIAL, false);
+                leftEnemy.entryDelay = row * 0.3f;
+                leftEnemy.targetHeight = targetH;
+                leftEnemy.singleShot = true;
+                leftEnemy.shotOrder = row;
+                leftEnemy.leaveDelay = 1f;
+                leftEnemy.setRadialIntensity(8, 2);
+                leftEnemy.setShotsRemaining(3);
+                ce.addEnemy(leftEnemy);
+
+                ClassEnemy rightEnemy = new ClassEnemy(100, 20, 4, new Vector2(rightX, WORLD_HEIGHT + 1f), 2, oscillation, 0, 1, ClassEnemy.ShotPattern.RADIAL, false);
+                rightEnemy.entryDelay = row * 0.3f;
+                rightEnemy.targetHeight = targetH;
+                rightEnemy.singleShot = true;
+                rightEnemy.shotOrder = row;
+                rightEnemy.leaveDelay = 1f;
+                rightEnemy.setRadialIntensity(8, 2);
+                rightEnemy.setShotsRemaining(3);
+                ce.addEnemy(rightEnemy);
             }
             waveCreated = true;
 
