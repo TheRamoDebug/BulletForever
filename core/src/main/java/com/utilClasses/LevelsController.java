@@ -3,6 +3,7 @@ package com.utilClasses;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class LevelsController {
@@ -26,7 +27,7 @@ public class LevelsController {
     public void selectLevel(SpriteBatch c, ControllerEnemies ce, ControllerBullets cbEnemy, Texture fondo, Sprite enemySprite, float delta, int level, Vector2 playerPosition){
         switch (level){
             case -1 -> {
-                levelminus1(c, ce, cbEnemy, fondo, enemySprite, delta);
+                levelminus1(c, ce, cbEnemy, fondo, enemySprite, delta, playerPosition);
             }
 
             case 1 -> {
@@ -65,17 +66,33 @@ public class LevelsController {
 
 
     //MODO INFINITO
-    public void levelminus1(SpriteBatch c, ControllerEnemies ce, ControllerBullets cbEnemy, Texture fondo, Sprite enemySprite, float delta){
-
+    public void levelminus1(SpriteBatch c, ControllerEnemies ce, ControllerBullets cbEnemy, Texture fondo, Sprite enemySprite, float delta, Vector2 playerPosition){
         BackgroundChange(c, fondo, delta);
 
         cont += delta;
         oscillation += delta * 0.5f;
 
-        //EL MODO INFINITO SE TERMINARÁ DE ADAPTAR
-        //DESPUÉS DE RESOLVER LOS DEMÁS CONFLICTOS DEL MERGE
-    }
+        if(cont > 0.2 && enemyInfinite != contEnemyLevel) {
 
+            cont = 0;
+            oscillation += 1.5f;
+
+            float x = MathUtils.random(1f, WORLD_WIDTH - 2f);
+            float y = WORLD_HEIGHT + 1f;
+
+            ClassEnemy auxiliarEnemy = new ClassEnemy(100, 20, 4, new Vector2(x, y), 1.5f, oscillation, 1, 1, ClassEnemy.ShotPattern.TARGETED, false);
+
+            auxiliarEnemy.targetHeight = 5f;
+            ce.addEnemy(auxiliarEnemy);
+            contEnemyLevel += 1;
+        }
+        if(ce.getEnemiesCount() == 0 && cont > 1f) {
+            enemyInfinite += 3;
+            contEnemyLevel = 0;
+        }
+
+        ce.movementEnemies(delta,oscillation, c, enemySprite,cbEnemy, playerPosition);
+    }
 
     //NIVEL 1
     public void level1(SpriteBatch c, ControllerEnemies ce, ControllerBullets cbEnemy, Texture fondo, Sprite enemySprite, float delta, Vector2 playerPosition){
