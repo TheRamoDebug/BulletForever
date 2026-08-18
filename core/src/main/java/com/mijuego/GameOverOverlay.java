@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.utilClasses.MasterClass;
+import com.utilClasses.Player;
 import io.github.com.mygdx.game.Main;
 
 public class GameOverOverlay implements Disposable {
@@ -38,7 +39,7 @@ public class GameOverOverlay implements Disposable {
         table.bottom().padBottom(150);
 
         BitmapFont titleFont = skin.getFont("title");
-        titleFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        titleFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
 
 
@@ -64,6 +65,7 @@ public class GameOverOverlay implements Disposable {
             @Override
             public void clicked(InputEvent event, float x, float y){
                 Screen screen = game.getScreen();
+                Player.setHealth(6);
                 game.setScreen(new ScreenGameplay(game));
                 screen.dispose();
             }});
@@ -128,11 +130,6 @@ public class GameOverOverlay implements Disposable {
         shapeRenderer.end();
     }
 
-
-
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-    }
 
     public void dispose() {
         stage.dispose();

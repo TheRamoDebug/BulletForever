@@ -1,8 +1,10 @@
 package com.ScreensClasses;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -13,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mijuego.ScreenGameplay;
+import com.mijuego.ScreenMenu;
+import com.utilClasses.Player;
 import io.github.com.mygdx.game.Main;
 
 
@@ -41,6 +45,7 @@ public class LevelsScreenClass {
     private boolean oneShot = true;
     private boolean twoShot = false;
 
+    private Texture iconlevel1;
 
     private Image level1;
     private Image level2;
@@ -90,16 +95,78 @@ public class LevelsScreenClass {
         }
     }
 
-    public void organizedImages(Image level1, Image level2, Image level3, Image level4, Stage stage, Main main) {
+    public void assingTextureAndClick(){
+        iconlevel1 = new Texture("things/iconolevel1.jpg");
+
+        switch (Player.getNumberLevel()){
+            case 1 -> {
+                level1 = new Image(iconlevel1);
+                clickLevel1();
+                level2 = new Image(iconlevel1);
+                level3 = new Image(iconlevel1);
+                level4 = new Image(iconlevel1);
+            }
+            default -> {
+                level1 = new Image(iconlevel1);
+                level2 = new Image(iconlevel1);
+                level3 = new Image(iconlevel1);
+                level4 = new Image(iconlevel1);
+            }
+        }
+
+    }
+
+    private void clickLevel1(){
+        level1.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                expandImage(level1);
+                state = false;
+                screenSelect = new ScreenGameplay(main, 1);
+            }
+        });
+    }
+
+    private void clickLevel2(){
+        level2.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                expandImage(level2);
+                state = false;
+                screenSelect = new ScreenGameplay(main, 2);
+            }
+        });
+    }
+
+    private void clickLevel3(){
+        level3.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                expandImage(level3);
+                state = false;
+                screenSelect = new ScreenGameplay(main, 3);
+            }
+        });
+    }
+
+    private void clickLevel4(){
+        level4.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                expandImage(level4);
+                state = false;
+                screenSelect = new ScreenGameplay(main, 4);
+            }
+        });
+    }
+
+
+
+    public void organizedImages(Stage stage, Main main) {
         this.main = main;
         this.stage = stage;
 
-        this.level1 = level1;
-        this.level2 = level2;
-        this.level3 = level3;
-        this.level4 = level4;
-
-
+        assingTextureAndClick();
 
         addAnimmation(level1);
         addAnimmation(level2);
@@ -131,41 +198,13 @@ public class LevelsScreenClass {
 
 
 
-        level1.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                expandImage(level1);
-                state = false;
-                screenSelect = new ScreenGameplay(main, 1);
-            }
-        });
 
-        level2.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                expandImage(level2);
-                state = false;
-                screenSelect = new ScreenGameplay(main, 2);
-            }
-        });
 
-        level3.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                expandImage(level3);
-                state = false;
-                screenSelect = new ScreenGameplay(main, 3);
-            }
-        });
 
-        level4.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                expandImage(level4);
-                state = false;
-                screenSelect = new ScreenGameplay(main, 4);
-            }
-        });
+
+
+
+
 
 
 
@@ -239,6 +278,15 @@ public class LevelsScreenClass {
 
 
     public float shapeRenderer(float superCont, Main game){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            state = false;
+            screenSelect = new ScreenMenu(game);
+            level1.addAction(Actions.fadeOut(1f, Interpolation.bounce));
+            level2.addAction(Actions.fadeOut(1f, Interpolation.bounce));
+            level3.addAction(Actions.fadeOut(1f, Interpolation.bounce));
+            level4.addAction(Actions.fadeOut(1f, Interpolation.bounce));
+        }
+
         if(state) {
             if (superCont > 0) {
                 superCont -= delta * 0.5f;
@@ -269,5 +317,9 @@ public class LevelsScreenClass {
         return superCont;
     }
 
+
+    public void dispose(){
+        iconlevel1.dispose();
+    }
 
 }

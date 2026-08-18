@@ -11,13 +11,13 @@ public class Controls {
 
     public void controlsKeysShots(ControllerBullets bulletsPlayer, Vector2 movementPlayer, Sound shotSound){
         //controls to shot oh hell na
-        if (Gdx.input.isKeyJustPressed(Input.Keys.M)){
-            bulletsPlayer.shot(movementPlayer.x + 0.2f, movementPlayer.y, 1f,0f,12f);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.N)){
+            bulletsPlayer.shot(movementPlayer.x + 0.2f, movementPlayer.y + 0.2f, 1f,0f,12f);
             shotSound.play(0.2f);
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.N)){
-            bulletsPlayer.shot(movementPlayer.x  + 0.6f, movementPlayer.y, 1f,0f,12f);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M)){
+            bulletsPlayer.shot(movementPlayer.x  + 0.6f, movementPlayer.y + 0.2f, 1f,0f,12f);
             shotSound.play(0.2f);
         }
 
@@ -48,12 +48,12 @@ public class Controls {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.W) && movement.y < 8){
-            movement.y += velocity * delta;
+            movement.y += (velocity / 4) * delta;
 
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S) && movement.y > 0){
-            movement.y -= velocity * delta;
+            movement.y -= (velocity / 4) * delta;
 
         }
 

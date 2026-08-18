@@ -84,11 +84,10 @@ public class MovementsEnemies {
         }
         positionEnemy.y = 7f;
 
-        //positionEnemy.y = (MathUtils.sin(oscilacionFija + oscilacion * velocityEnemy) * 1.5f) + 5f;
-
         return positionEnemy;
     }
 
 
 
 }
+

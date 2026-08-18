@@ -18,14 +18,15 @@ public class ControllerEnemies {
 
     public int getEnemiesCount(){return enemies.size();}
 
-
     public boolean isCollidingWithEnemy(ClassBullets bullet, StatsClass statsClass) {
         for (int i = enemies.size() - 1; i >= 0; i--) {
 
             if (bullet.collision.overlaps(enemies.get(i).collisionEnemy)) {
-                enemies.get(i).health -= 10;
+                enemies.get(i).health -= Player.getDamage();
                 if (enemies.get(i).health <= 0) {
                     statsClass.addI();
+                    statsClass.addScore(100);
+                    Player.setCurrentDeaths(100);
                     enemies.remove(i);
                 }
                 return true;

@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
 
 
 
@@ -64,20 +66,20 @@ public class ControllerBullets {
 
 
 
-    public void drawBulletsEnemies(SpriteBatch c, Texture bullet, Circle collisionPlayer){
+    public void drawBulletsEnemies(SpriteBatch c, Texture bullet, Rectangle collisionPlayer){
         for (int i = balasActivas.size - 1; i >= 0; i--) {
             ClassBullets b = balasActivas.get(i);
 
             if (Intersector.overlaps(collisionPlayer, b.collision)) {
                 Player.setLessHealth();
+                MasterClass.planeDamage();
                 b.state = false;
             }
 
             if (b.state) {
                 c.draw(bullet, b.position.x, b.position.y, 0.2f, 0.2f);
             }
-
-             else {
+            else {
                 balasActivas.removeIndex(i);
                 balaPool.free(b);
             }
