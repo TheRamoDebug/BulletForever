@@ -10,6 +10,11 @@ public class Player {
     private static int enemiesDeath;
     private static int damage;
 
+    public static void defaultStats() {
+        damage = 10;
+        health = 6;
+    }
+
     // MODO INFINITO
     private static int maxScoreInfinite;
     private static int currectDeaths;
@@ -42,8 +47,7 @@ public class Player {
     public static void selectLevel() {
         if (enemiesDeath >= 0) {
             levelOfPlayer = 1;
-            damage = 10;
-            health = 6;
+            defaultStats();
         }
     }
 

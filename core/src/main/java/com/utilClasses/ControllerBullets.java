@@ -2,13 +2,10 @@ package com.utilClasses;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Intersector;
 
 
 
@@ -66,7 +63,7 @@ public class ControllerBullets {
 
 
 
-    public void drawBulletsEnemies(SpriteBatch c, Texture bullet, Rectangle collisionPlayer){
+    public void drawBulletsEnemies(SpriteBatch c, Texture bullet, Circle collisionPlayer){
         for (int i = balasActivas.size - 1; i >= 0; i--) {
             ClassBullets b = balasActivas.get(i);
 
