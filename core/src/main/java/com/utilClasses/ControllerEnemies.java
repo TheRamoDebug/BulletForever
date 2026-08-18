@@ -40,7 +40,7 @@ public class ControllerEnemies {
     public void movementEnemies(float delta, float oscillation, SpriteBatch c, Sprite textureEnemy, ControllerBullets bala, Vector2 playerPosition){
 
         for (int i = enemies.size() - 1; i >= 0; i--){
-            if (enemies.get(i).currentState == ClassEnemy.EnemyState.LEAVING && enemies.get(i).isOutOfBounds()) {
+            if ((enemies.get(i).currentState == ClassEnemy.EnemyState.LEAVING || enemies.get(i).useCurvePath || enemies.get(i).useSimpleZigZag) && enemies.get(i).isOutOfBounds()) {
                 enemies.remove(i);
                 continue;
             }
