@@ -44,19 +44,15 @@ public class PlayerAnimation implements Disposable {
     public TextureRegion update(float delta){
         State previousState = currentState;
 
-
-        stateTime += delta;
         TextureRegion textureRegion;
 
-
-        if(Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.W)){
+        if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.W)) {
             currentState = State.RIGHT;
-        }else if(Gdx.input.isKeyPressed(Input.Keys.D) && Gdx.input.isKeyPressed(Input.Keys.W)){
+        } else if (Gdx.input.isKeyPressed(Input.Keys.D) && Gdx.input.isKeyPressed(Input.Keys.W)) {
             currentState = State.LEFT;
-        }else{
+        } else {
             currentState = State.IDLE;
         }
-
 
         if (currentState != previousState) {
             stateTime = 0f;
@@ -64,13 +60,11 @@ public class PlayerAnimation implements Disposable {
             stateTime += delta;
         }
 
-
         textureRegion = switch (currentState) {
             case RIGHT -> animationRight.getKeyFrame(stateTime);
             case LEFT -> animationLeft.getKeyFrame(stateTime);
             default -> animationIdle.getKeyFrame(stateTime);
         };
-
 
         return textureRegion;
     }
@@ -79,8 +73,11 @@ public class PlayerAnimation implements Disposable {
 
 
 
+
     @Override
     public void dispose() {
         idle.dispose();
+        movementLeft.dispose();
+        movementRight.dispose();
     }
 }

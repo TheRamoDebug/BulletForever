@@ -1,6 +1,6 @@
 package com.utilClasses;
 
-
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool.Poolable;
@@ -18,7 +18,7 @@ public class ClassBullets implements Poolable {
         position.set(x, y);
         velocity.set(velX, velY);
         this.radio = radio;
-        collision.set(x,y,radio / 16f,radio / 6f );
+        collision.set(x, y, radio / 16f, radio / 6f);
         state = true;
     }
 

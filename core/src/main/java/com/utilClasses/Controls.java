@@ -10,7 +10,7 @@ public class Controls {
     private float velocity = 10f;
 
     public void controlsKeysShots(ControllerBullets bulletsPlayer, Vector2 movementPlayer, Sound shotSound){
-        //controls to shot oh hell na
+        //controls to shoot oh hell naw
         if (Gdx.input.isKeyJustPressed(Input.Keys.N)){
             bulletsPlayer.shot(movementPlayer.x + 0.2f, movementPlayer.y + 0.2f, 1f,0f,12f);
             shotSound.play(0.2f);
@@ -48,12 +48,12 @@ public class Controls {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.W) && movement.y < 8){
-            movement.y += (velocity / 4) * delta;
+            movement.y += (velocity / 2) * delta;
 
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S) && movement.y > 0){
-            movement.y -= (velocity / 4) * delta;
+            movement.y -= (velocity / 2) * delta;
 
         }
 
